@@ -505,104 +505,6 @@ def write_metrics_text(path: Path, metrics: Dict[str, float], matrix: np.ndarray
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def generate_report_sections(
-    source_code: str,
-    metrics: Dict[str, float],
-    early_info: Dict[str, float],
-    output_paths: Dict[str, Path],
-    sample_predictions: List[Dict[str, object]],
-) -> None:
-    """生成报告要粘贴的三部分，指标全部来自这次真实运行。"""
-    prediction_lines = []
-    for item in sample_predictions:
-        prediction_lines.append(
-            f"- `{item['review']}`：预测为 **{item['pred_label']}**，正类概率为 **{item['prob_positive']:.4f}**。"
-        )
-
-    report = f"""# 一、源代码
-
-程序整体流程是：先读取 IMDB 数据集，再清洗影评文本、分词、构建词表，把每条影评 padding/truncate 到 `{MAX_LEN}`，之后使用 PyTorch 搭建 LSTM 情感分类模型，训练时用验证集做 EarlyStopping，最后在测试集上计算指标并保存图像。
-
-```python
-{source_code}
-```
-
-# 二、展示截图和结果
-
-## 图1 实验要求摘要截图
-
-说明本实验根据 `实验5－题目.docx` 整理任务要求，完成 IMDB 影评情感分类任务。终端中 `========== Read Experiment Requirement ==========` 部分展示了本次实验的关键要求，包括 IMDB 数据集、80%/10%/10% 划分、`maxlen=200`、LSTM、EarlyStopping 和测试指标。
-
-## 图2 数据集读取与标签分布截图
-
-对应终端 `Dataset Information` 和下图。数据集一共有 50000 条影评，正负样本数量均衡。
-
-![图2 标签分布]({output_paths['label_distribution'].name})
-
-## 图3 文本长度分布截图
-
-对应 `exp5_review_length_distribution.png`。红色虚线表示 `maxlen=200`，超过 200 个 token 的评论会被截断，不足 200 的评论会在后面 padding。
-
-![图3 文本长度分布]({output_paths['length_distribution'].name})
-
-## 图4 文本预处理和词表信息截图
-
-终端 `Text Preprocessing` 和 `Vocabulary Information` 展示了文本清洗、分词和词表构建结果。程序先去掉 `<br />` 这类 HTML 标签，再转小写、分词，然后用训练集构建词表，最后把 review 文本转换成固定长度数字序列。
-
-## 图5 LSTM 模型结构截图
-
-终端 `Model Structure` 中展示了模型结构。`Embedding` 把词编号变成词向量，`LSTM` 按顺序读取影评并保留隐藏状态，`Dropout` 用来减轻过拟合，`Linear` 把最后的序列表示映射成正类/负类判断。
-
-## 图6 训练日志截图
-
-终端 `Training Logs` 记录了每一轮的 `train_loss`、`val_loss`、`train_acc`、`val_acc`。本次最佳验证集损失出现在第 {int(early_info['best_epoch'])} 轮，最佳 `val_loss={early_info['best_val_loss']:.4f}`。
-
-## 图7 训练损失曲线和准确率曲线
-
-下面两张图分别展示训练集和验证集的 loss、accuracy 变化。可以通过曲线观察模型是否正常收敛，以及验证集是否开始波动或出现过拟合迹象。
-
-![图7-1 Loss 曲线]({output_paths['loss_curve'].name})
-
-![图7-2 Accuracy 曲线]({output_paths['accuracy_curve'].name})
-
-## 图8 测试集混淆矩阵
-
-混淆矩阵展示了负类和正类各自被正确识别、错误识别的数量，能够看出模型在哪一类上更容易出错。
-
-![图8 混淆矩阵]({output_paths['confusion_matrix'].name})
-
-## 图9 测试指标柱状图
-
-测试集真实运行结果如下：Accuracy={metrics['accuracy']:.4f}，Precision={metrics['precision']:.4f}，Recall={metrics['recall']:.4f}，F1={metrics['f1']:.4f}。
-
-![图9 测试指标]({output_paths['metrics_bar'].name})
-
-## 图10 自定义影评预测结果
-
-对应 `exp5_prediction_examples.txt` 和终端 `Sample Predictions`。短句预测结果如下：
-
-{chr(10).join(prediction_lines)}
-
-# 三、心得体会
-
-这次实验做的是 IMDB 影评情感分类，我一开始以为它和普通表格分类差不多，只要把文本读出来就可以训练。后来真正做预处理时才发现，文本数据最麻烦的地方在于每句话长度不同，而且里面还有 `<br />` 这类 HTML 标签。如果不先清洗，模型读到的就不只是影评内容，还会混进很多无意义符号。所以我先把 HTML 标签去掉，再统一小写和分词，这一步让我感觉到 NLP 实验里“数据整理”其实很关键。
-
-结合老师 PPT 里讲的循环神经网络，我更能理解为什么 RNN 适合处理文本、语音、时间序列这类前后有关联的数据。影评不是一堆互相独立的词，前面的描述会影响后面对整部电影的判断。比如一句话前面说剧情很拖沓，后面又说结尾救回来了，模型需要按顺序读完整段话，才能判断整体情感。IMDB 情感分类属于 Many-to-One 结构，也就是输入是一整段影评序列，最后只输出一个情感类别：positive 或 negative。
-
-PPT 中提到隐藏状态时，我觉得可以把它理解成模型读句子时留下的“记忆”。模型读到每个词以后，隐藏状态都会更新一次，里面会保存前面读过内容的影响。比如读到 “not good” 时，单看 good 好像是正面词，但前面的 not 会改变它的意思。隐藏状态的作用就是让模型不是孤立地看当前词，而是带着前文信息继续往后读。
-
-不过普通 RNN 在长文本里容易遇到梯度消失问题，前面很早出现的信息传到后面时可能已经变弱了。LSTM 通过输入门、遗忘门、输出门等门控结构缓解长期依赖问题，这也是我这次选择 LSTM 的原因。影评经常很长，如果只用普通 RNN，模型可能更难记住前面关键的情感表达。
-
-这次设置 `maxlen=200` 也让我比较直观地理解了为什么文本要统一长度。DataLoader 每个 batch 需要堆成整齐的张量，所以短评论要 padding，长评论要 truncate。这样做会损失一部分超长评论后面的内容，但能让训练过程更稳定，也能控制计算量。词表也不能无限大，如果把所有低频词都放进去，训练会变慢，Embedding 参数也会变多，所以我限制了 `vocab_size`，只保留训练集中更常见的词。
-
-训练过程中我还观察到，训练准确率通常会继续上升，但验证集的 `val_loss` 不一定一直下降，有时候会波动。EarlyStopping 让我看到验证集不再提升时继续训练不一定有意义，继续跑可能只是让模型更记住训练集，反而出现过拟合。本次实验保存的是验证集损失最好的模型，而不是最后一轮模型，这一点比单纯跑满 epoch 更合理。
-
-实际遇到的问题主要有几个：第一，review 中有 `<br />`，需要清洗；第二，文本长度差异很大，需要 padding/truncate；第三，词表太大会导致训练变慢，所以限制了 `vocab_size`；第四，训练准确率上升时验证集可能波动，需要重点观察 `val_loss`；第五，短句预测比较直观，但真实长评论里可能有反讽、转折和复杂表达，模型仍然可能误判。通过这次实验，我对 RNN、隐藏状态、Many-to-One、LSTM 缓解梯度消失这些概念不再只是停留在 PPT 上，而是能和一个完整的文本分类任务对应起来了。
-"""
-
-    output_paths["report"].write_text(report, encoding="utf-8")
-
-
 def main() -> None:
     set_seed(RANDOM_SEED)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -776,20 +678,6 @@ def main() -> None:
         print(f"Review: {item['review']}")
         print(f"Predicted label: {item['pred_label']} | Positive probability: {item['prob_positive']:.4f}")
 
-    output_paths = {
-        "label_distribution": OUTPUT_DIR / "exp5_label_distribution.png",
-        "length_distribution": OUTPUT_DIR / "exp5_review_length_distribution.png",
-        "loss_curve": OUTPUT_DIR / "exp5_training_loss_curve.png",
-        "accuracy_curve": OUTPUT_DIR / "exp5_accuracy_curve.png",
-        "confusion_matrix": OUTPUT_DIR / "exp5_confusion_matrix.png",
-        "metrics_bar": OUTPUT_DIR / "exp5_metrics_bar.png",
-        "prediction_examples": OUTPUT_DIR / "exp5_prediction_examples.txt",
-        "wrong_examples": OUTPUT_DIR / "exp5_wrong_examples.txt",
-        "report": OUTPUT_DIR / "exp5_report_sections.md",
-    }
-    source_code = Path(__file__).read_text(encoding="utf-8")
-    generate_report_sections(source_code, metrics, early_info, output_paths, sample_predictions)
-
     print_header("Saved Output Files")
     files_to_show = [
         Path(__file__),
@@ -807,7 +695,6 @@ def main() -> None:
         OUTPUT_DIR / "exp5_metrics.txt",
         OUTPUT_DIR / "exp5_split_info.json",
         OUTPUT_DIR / "exp5_vocab_info.json",
-        OUTPUT_DIR / "exp5_report_sections.md",
     ]
     for file_path in files_to_show:
         print(file_path)
