@@ -1,0 +1,7 @@
+{
+  "max_vocab_size": 20000,
+  "actual_vocab_size": 20000,
+  "min_word_freq": 2,
+  "pad_idx": 0,
+  "unk_idx": 1
+}

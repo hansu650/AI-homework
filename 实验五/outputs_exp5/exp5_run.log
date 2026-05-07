@@ -1,0 +1,109 @@
+
+========== Read Experiment Requirement ==========
+任务: 使用 IMDB-Dataset.csv 完成影评正负情感二分类。
+要求: train/val/test=80%/10%/10%，maxlen=200，LSTM，EarlyStopping。
+输出: Accuracy、Precision、Recall、F1、混淆矩阵、训练曲线和自定义预测。
+
+========== Experiment 5: IMDB Sentiment Classification ==========
+Current device: cuda
+CUDA device name: NVIDIA GeForce RTX 4090
+Dataset path: C:\Users\qintian\Desktop\人工智能\实验五\IMDB-Dataset.csv
+Output directory: C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5
+maxlen: 200
+batch_size: 64
+epochs: 8
+
+========== Dataset Information ==========
+数据集路径: C:\Users\qintian\Desktop\人工智能\实验五\IMDB-Dataset.csv
+数据总量: 50000
+negative 数量: 25000
+positive 数量: 25000
+
+========== Text Preprocessing ==========
+清洗方式: 去掉 HTML 标签、转小写、去掉多数标点，再用正则分词。
+maxlen: 200
+影评平均 token 数: 231.00
+影评长度中位数: 173
+影评最长 token 数: 2473
+清洗示例:
+原文: One of the other reviewers has mentioned that after watching just 1 Oz episode you'll be hooked. They are right, as this is exactly what happened with me.<br /><br />The first thing that struck me about Oz was its brutality and unflinching  ...
+清洗后: one of the other reviewers has mentioned that after watching just 1 oz episode you'll be hooked they are right as this is exactly what happened with me the first thing that struck me about oz was its brutality and unflinching scenes of viol ...
+train 数量: 40000
+val 数量: 5000
+test 数量: 5000
+
+========== Vocabulary Information ==========
+vocab_size: 20000
+vocab_size 上限: 20000
+min_word_freq: 2
+PAD token/index: <pad>/0
+UNK token/index: <unk>/1
+词表前 20 个词: ['<pad>', '<unk>', 'the', 'and', 'a', 'of', 'to', 'is', 'in', 'it', 'i', 'this', 'that', 'was', 'as', 'for', 'with', 'movie', 'but', 'film']
+
+========== Model Structure ==========
+LSTMSentimentClassifier(
+  (embedding): Embedding(20000, 128, padding_idx=0)
+  (lstm): LSTM(128, 128, batch_first=True, bidirectional=True)
+  (dropout): Dropout(p=0.5, inplace=False)
+  (fc): Linear(in_features=256, out_features=1, bias=True)
+)
+
+========== Training Logs ==========
+Epoch [01/8] | train_loss=0.6412 | val_loss=0.6165 | train_acc=0.6294 | val_acc=0.6680 | time=27.74s
+Epoch [02/8] | train_loss=0.4994 | val_loss=0.4222 | train_acc=0.7555 | val_acc=0.8084 | time=22.05s
+Epoch [03/8] | train_loss=0.3943 | val_loss=0.3510 | train_acc=0.8245 | val_acc=0.8442 | time=12.25s
+Epoch [04/8] | train_loss=0.3196 | val_loss=0.3727 | train_acc=0.8673 | val_acc=0.8234 | time=22.23s
+Epoch [05/8] | train_loss=0.2634 | val_loss=0.3032 | train_acc=0.8941 | val_acc=0.8792 | time=17.59s
+Epoch [06/8] | train_loss=0.2045 | val_loss=0.3007 | train_acc=0.9208 | val_acc=0.8788 | time=11.73s
+Epoch [07/8] | train_loss=0.1673 | val_loss=0.3243 | train_acc=0.9374 | val_acc=0.8816 | time=11.74s
+Epoch [08/8] | train_loss=0.1317 | val_loss=0.3481 | train_acc=0.9527 | val_acc=0.8874 | time=11.93s
+EarlyStopping triggered at epoch 8.
+
+========== EarlyStopping Information ==========
+patience: 2
+trained_epochs: 8
+best_epoch: 6
+best_val_loss: 0.3007
+stopped_early: True
+best_model_path: C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_best_lstm.pt
+
+========== Test Metrics ==========
+Confusion Matrix (rows=true, cols=pred):
+[[2148  352]
+ [ 274 2226]]
+Accuracy : 0.8748
+Precision: 0.8635
+Recall   : 0.8904
+F1       : 0.8767
+
+========== Sample Predictions ==========
+Review: This movie is fantastic!
+Predicted label: positive | Positive probability: 0.9578
+Review: A waste of time.
+Predicted label: negative | Positive probability: 0.0082
+Review: The story is boring and too long.
+Predicted label: negative | Positive probability: 0.0202
+Review: I really like the actors and the ending is touching.
+Predicted label: positive | Positive probability: 0.8580
+Review: The film starts slowly, but the ending is powerful and very emotional.
+Predicted label: positive | Positive probability: 0.9341
+Review: I expected much more from this movie, but it was messy, dull and too long.
+Predicted label: negative | Positive probability: 0.0130
+
+========== Saved Output Files ==========
+C:\Users\qintian\Desktop\人工智能\实验五\exp5_imdb_lstm.py
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_best_lstm.pt
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_label_distribution.png
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_review_length_distribution.png
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_training_loss_curve.png
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_accuracy_curve.png
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_confusion_matrix.png
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_metrics_bar.png
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_prediction_examples.txt
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_wrong_examples.txt
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_training_history.csv
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_metrics.json
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_metrics.txt
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_split_info.json
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_vocab_info.json
+C:\Users\qintian\Desktop\人工智能\实验五\outputs_exp5\exp5_report_sections.md

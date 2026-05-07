@@ -1,0 +1,25 @@
+Experiment 5 custom prediction examples
+
+[1] Review: This movie is fantastic!
+    Predicted label: positive
+    Positive probability: 0.9526
+
+[2] Review: A waste of time.
+    Predicted label: negative
+    Positive probability: 0.0053
+
+[3] Review: The story is boring and too long.
+    Predicted label: negative
+    Positive probability: 0.0082
+
+[4] Review: I really like the actors and the ending is touching.
+    Predicted label: positive
+    Positive probability: 0.9686
+
+[5] Review: The film starts slowly, but the ending is powerful and very emotional.
+    Predicted label: positive
+    Positive probability: 0.9920
+
+[6] Review: I expected much more from this movie, but it was messy, dull and too long.
+    Predicted label: negative
+    Positive probability: 0.0062

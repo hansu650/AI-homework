@@ -1,0 +1,9 @@
+Accuracy : 0.8748
+Precision: 0.8635
+Recall   : 0.8904
+F1       : 0.8767
+Confusion Matrix:
+[[2148, 352],
+ [274, 2226]]
+Best Epoch: 6
+Best Val Loss: 0.3007

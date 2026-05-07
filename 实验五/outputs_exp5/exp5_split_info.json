@@ -1,0 +1,10 @@
+{
+  "total": 50000,
+  "train": 40000,
+  "val": 5000,
+  "test": 5000,
+  "negative": 25000,
+  "positive": 25000,
+  "maxlen": 200,
+  "vocab_size": 20000
+}

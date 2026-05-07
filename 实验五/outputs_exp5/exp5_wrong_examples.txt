@@ -1,0 +1,31 @@
+Experiment 5 wrong prediction examples
+
+[1] True: negative | Pred: positive | Positive prob: 0.5915
+    Review: Gene Hackman is a former Marine Corps colonel who musters a handful of private Vietnam vets to go back to Laos and rescue some Americans who have been listed as missing in action. Hackman suspects that, in actuality, the half-dozen or so MIAs are secretly being held in a remote camp by Laotians to be tormented and to provide more hard labor. Hackman is being paid by the wealthy Robert Stack, whose son, like Hackman's son, is thought to be among the MIAs. But the circumstances are such that Hackm...
+
+[2] True: negative | Pred: positive | Positive prob: 0.7106
+    Review: If this movie had a point I never discovered it. A very depressing movie which supposedly is about the final evacuation of the residents living in a dam site area on the Northfork River in Montana. The problem is that there is no actual Northfork River in Montana. There are several north forks but they are branches of other rivers which divided into north and south forks.<br /><br /> The opening scene of the movie is a coffin bobbing to the surface of the lake but the scene is never tied into th...
+
+[3] True: positive | Pred: negative | Positive prob: 0.1164
+    Review: This movie is pretty cheesy, but I do give it credit for at least trying to provide some characterization for it's principles. There are some great moments in the film and the dialogue has some great moments as well.<br /><br />The aerial assault sequence is perhaps the best part of the movie.<br /><br />I guess I really like the idea of what lengths a veteran will go for a fellow veteran. Sure it's not all that well done, but the premise is not at all bad.<br /><br />Tom
+
+[4] True: positive | Pred: negative | Positive prob: 0.3661
+    Review: When I saw this movie in the theater when it came out in 1995 via a free advanced screening, I was totally enchanted and would have gladly paid to see it. I was sorry when I talked to many people afterwards who had also seen it and who were totally disappointed with it and how it ended. I, on the other hand, felt completely the opposite. I was totally satisfied with the outcome and everything else. People I talked to said there was too much talking! Plus they were unhappy because they felt that ...
+
+[5] True: positive | Pred: negative | Positive prob: 0.4563
+    Review: What the movie The 60s really represents (to those of us who growled around in the belly of America in those times) is the turbulence and diversity of the decade. Despite the exaggerated, stereotyped characters, the genuineness of the issues remains clear.<br /><br />Not only were those radical times of change, but also very confusing times. Two basic things changed our world then: the 1964 Civil Rights Act, and the overwhelming influence of the media. Those two new freedoms began social changes...
+
+[6] True: negative | Pred: positive | Positive prob: 0.5138
+    Review: I can imagine what happened for this film to come into being: a bunch of studio guys are sitting around, drinking gin-and-tonic, maybe a joint, and one of them comes up with the idea that it would be great if they could find a film that would bridge the generation gap, which at that time was about as far apart as Archie Bunker and Mick Jagger. Something that both college-age rebels and their parents would find equally interesting-- for different reasons, perhaps, but still, a ticket is a ticket....
+
+[7] True: negative | Pred: positive | Positive prob: 0.6106
+    Review: I read a lot of high hopes from readers of the book that this would be a faithful adaptation of Nora Roberts' story. Not having read the book, I don't know if this adaptation was faithful but I do know it wasn't good. Actually, the screenplay was the best part of the movie so kudos to Nora Roberts.<br /><br />I planned ahead and watched Carolina Moon because of Claire Forlani. I've never been sure if she's a good actress. She's been decent in some movies, average in others and really bad in this...
+
+[8] True: negative | Pred: positive | Positive prob: 0.6457
+    Review: Hollywood had a long love affair with bogus Arabian Nights tales but few of these products have stood the test of time. The most memorable were the Jon Hall, Maria Montez films which have long since become camp. This one is filled with dubbed songs, anachronistic slang, and slapstick. It's a truly bounteous crop of Mesopotamian corn, and pretty near intolerable today. It was nominated for its imaginative special effects which are almost unnoticeable in this day and age, consisting mainly of tric...
+
+[9] True: positive | Pred: negative | Positive prob: 0.4635
+    Review: I couldn't help but relish the entire premise of CAT IN THE BRAIN because it dutifully explains a director's steadily going mad, seeing people murdered from past movies he has made. Even mundane activities such as cooking a meal in the microwave or running a faucet of water yield some horrific butchery from a film in the past. Director Fulci playing himself, is directing GHOSTS OF SODOM(?)and can not seem to deprive his mental well being from constant murder. He seeks help from a psychiatrist wh...
+
+[10] True: negative | Pred: positive | Positive prob: 0.5905
+    Review: Michael Feifer writes and directs this fictitious story based on the arrest of Edward Gein in Plainfield, Wisconsin. Gein was responsible for a rash of gruesome murders that sent a shock wave of terror through his rural hometown in the late 1950's. His evil mind and twisted world is suspected to be caused by his domineering zealous Lutheran mother. Ed was given the nickname "The Butcher of Plainfield". He would rob corpses from fresh graves of women who resembled his mother and he would have sex...
