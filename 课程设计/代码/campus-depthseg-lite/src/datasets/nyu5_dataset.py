@@ -1,4 +1,4 @@
-"""NYU-style RGB-D semantic segmentation dataset mapped to five classes."""
+"""RGB-D semantic segmentation dataset for exported NYU5 files."""
 
 from __future__ import annotations
 
@@ -22,14 +22,16 @@ from src.datasets.transforms import (
 
 
 class NYU5Dataset(Dataset):
-    """Read RGB, depth, and NYU40 labels, then map labels into five classes."""
+    """Read RGB, depth, and five-class labels from split files."""
 
     def __init__(
         self,
         split_file: str | Path,
+        data_dir: str | Path | None = None,
         image_size: Tuple[int, int] = IMAGE_SIZE,
         training: bool = False,
         flip_prob: float = 0.5,
+        label_mode: str = "nyu5",
     ) -> None:
         self.split_file = Path(split_file)
         if not self.split_file.exists():
@@ -37,10 +39,13 @@ class NYU5Dataset(Dataset):
         if not self.split_file.is_file():
             raise ValueError(f"Split path is not a file: {self.split_file}")
 
-        self.root_dir = self.split_file.parent
+        self.root_dir = self._resolve_data_dir(data_dir)
         self.image_size = image_size
         self.training = training
         self.flip_prob = flip_prob
+        self.label_mode = label_mode
+        if self.label_mode not in {"nyu5", "nyu40"}:
+            raise ValueError("label_mode must be 'nyu5' or 'nyu40'")
         self.samples = self._read_split(self.split_file)
 
         if len(self.samples) == 0:
@@ -59,7 +64,11 @@ class NYU5Dataset(Dataset):
         if self.training and random.random() < self.flip_prob:
             rgb, depth, label = horizontal_flip(rgb, depth, label)
 
-        mapped_label = self._map_label(label_to_tensor(label))
+        label_tensor = label_to_tensor(label)
+        if self.label_mode == "nyu5":
+            mapped_label = self._validate_nyu5_label(label_tensor)
+        else:
+            mapped_label = self._map_nyu40_label(label_tensor)
 
         return {
             "rgb": rgb_to_tensor(rgb),
@@ -99,10 +108,35 @@ class NYU5Dataset(Dataset):
             raise ValueError(f"{kind} path is not a file: {path}")
         return path
 
+    def _resolve_data_dir(self, data_dir: str | Path | None) -> Path:
+        if data_dir is not None:
+            root_dir = Path(data_dir)
+        elif self.split_file.parent.name == "splits":
+            root_dir = self.split_file.parent.parent
+        else:
+            root_dir = self.split_file.parent
+
+        if not root_dir.exists():
+            raise FileNotFoundError(f"Data directory not found: {root_dir}")
+        if not root_dir.is_dir():
+            raise ValueError(f"Data directory is not a directory: {root_dir}")
+        return root_dir
+
     @staticmethod
-    def _map_label(label: torch.Tensor) -> torch.Tensor:
+    def _map_nyu40_label(label: torch.Tensor) -> torch.Tensor:
         label_np = label.numpy()
         mapped = np.full(label_np.shape, IGNORE_INDEX, dtype=np.int64)
         for source_id, target_id in NYU40_TO_5.items():
             mapped[label_np == source_id] = target_id
         return torch.from_numpy(mapped).long()
+
+    @staticmethod
+    def _validate_nyu5_label(label: torch.Tensor) -> torch.Tensor:
+        valid = ((label >= 0) & (label < 5)) | (label == IGNORE_INDEX)
+        if not bool(valid.all()):
+            invalid_values = torch.unique(label[~valid]).tolist()
+            raise ValueError(
+                "NYU5 label contains values outside 0..4 and 255: "
+                f"{invalid_values}"
+            )
+        return label.long()

@@ -34,7 +34,12 @@ def test_dataset_reads_synthetic_files_and_maps_labels(tmp_path: Path):
     Image.fromarray(label).save(tmp_path / "label.png")
     (tmp_path / "split.txt").write_text("rgb.png depth.png label.png\n", encoding="utf-8")
 
-    dataset = NYU5Dataset(tmp_path / "split.txt", image_size=(8, 10), training=False)
+    dataset = NYU5Dataset(
+        tmp_path / "split.txt",
+        image_size=(8, 10),
+        training=False,
+        label_mode="nyu40",
+    )
     sample = dataset[0]
 
     assert sample["rgb"].shape == (3, 8, 10)
@@ -57,3 +62,28 @@ def test_dataset_missing_file_raises_clear_error(tmp_path: Path):
 
     with pytest.raises(FileNotFoundError, match="RGB file not found"):
         NYU5Dataset(tmp_path / "split.txt")
+
+
+def test_dataset_reads_nyu5_split_relative_to_data_dir(tmp_path: Path):
+    data_dir = tmp_path / "nyu5"
+    for folder in ["images", "depths", "labels", "splits"]:
+        (data_dir / folder).mkdir(parents=True)
+
+    Image.fromarray(np.zeros((8, 10, 3), dtype=np.uint8)).save(data_dir / "images" / "000001.png")
+    Image.fromarray(np.ones((8, 10), dtype=np.uint16)).save(data_dir / "depths" / "000001.png")
+    label = np.zeros((8, 10), dtype=np.uint8)
+    label[0, 0] = 4
+    label[0, 1] = IGNORE_INDEX
+    Image.fromarray(label).save(data_dir / "labels" / "000001.png")
+    (data_dir / "splits" / "train.txt").write_text(
+        "images/000001.png depths/000001.png labels/000001.png\n",
+        encoding="utf-8",
+    )
+
+    dataset = NYU5Dataset(data_dir / "splits" / "train.txt", image_size=(8, 10))
+    sample = dataset[0]
+
+    assert sample["rgb"].shape == (3, 8, 10)
+    assert sample["depth"].shape == (1, 8, 10)
+    assert sample["label"][0, 0].item() == 4
+    assert sample["label"][0, 1].item() == IGNORE_INDEX

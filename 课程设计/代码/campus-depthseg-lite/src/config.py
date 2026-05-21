@@ -4,6 +4,39 @@ CLASS_NAMES = ["other", "floor", "wall", "obstacle", "door_window"]
 IGNORE_INDEX = 255
 NUM_CLASSES = len(CLASS_NAMES)
 
+NYU_NAME_KEYWORDS_TO_5 = {
+    "floor": ["floor"],
+    "wall": ["wall", "ceiling"],
+    "door_window": ["door", "window", "blinds", "curtain"],
+    "obstacle": [
+        "chair",
+        "table",
+        "desk",
+        "bed",
+        "sofa",
+        "cabinet",
+        "shelf",
+        "shelves",
+        "bookshelf",
+        "dresser",
+        "counter",
+        "sink",
+        "toilet",
+        "bathtub",
+        "monitor",
+        "television",
+        "tv",
+        "lamp",
+        "box",
+        "bag",
+        "clothes",
+        "books",
+        "paper",
+        "pillow",
+        "equipment",
+    ],
+}
+
 # NYU40 class ids are mapped into the five course-design classes.
 # 0 is kept as "other" so tiny synthetic labels can also pass through tests.
 NYU40_TO_5 = {
