@@ -1,83 +1,131 @@
 # Campus DepthSeg Lite
 
-面向校园室内空间巡检的轻量 RGB-D 语义分割与空间占用分析系统。
+Lightweight RGB-D semantic segmentation and occupancy analysis for campus indoor inspection.
 
-本工程是课程设计第一轮代码框架与 CPU smoke test。当前不包含正式训练结果，不下载数据集，不下载大模型，也不会自动占用 GPU。
+This repository is a clean-room course-design project. It does not copy, import, or depend on code from `hansu650/Lun-Wen`, DFormer, DFormerv2, CMX, ESANet, TokenFusion, or other paper repositories.
 
-## Clean-Room 说明
+## Scope
 
-- 本项目为独立实现，不复制、导入或依赖 `hansu650/Lun-Wen` 中的代码、类名、函数名、文件结构或实验配置。
-- 本项目不复制 DFormer、DFormerv2、CMX、ESANet、TokenFusion 等开源论文项目源码。
-- 模型仅参考 RGB-D 语义分割、深度边界先验和多尺度融合的通用思想，所有实现均为重新编写。
+Current scope:
 
-## 环境
+- NYUDepthV2 MAT inspection and local export to five classes.
+- RGB-D dataset loading and synchronized transforms.
+- Lightweight segmentation model with three experiment variants.
+- Lightning training wrapper, CSV logs, best-checkpoint path, metric logging.
+- Curve plotting, test-set evaluation, and prediction panels.
+- CPU smoke tests and synthetic demos.
+
+Not included:
+
+- Dataset downloads.
+- Large pretrained model downloads.
+- Formal training results.
+- Mobile app, video processing, or report text.
+
+## Setup
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 快速验证
+## Quick Checks
 
 ```bash
+python -m compileall src scripts tests
 pytest -q
 python scripts/smoke_forward.py --device cpu
 python scripts/demo_inspection.py
 ```
 
-`demo_inspection.py` 会生成：
+## Data Layout
+
+Prepared NYU5 data should live inside the project, but it is ignored by Git:
 
 ```text
-demo/results/demo_panel.png
+data/nyu5/
+  images/
+  depths/
+  labels/
+  splits/
+    train.txt
+    val.txt
+    test.txt
 ```
 
-## 数据格式
-
-正式数据集使用 split 文件，每行三列：
+Each split line uses paths relative to `data/nyu5/`:
 
 ```text
-rgb_path depth_path label_path
+images/000001.png depths/000001.png labels/000001.png
 ```
 
-路径可以是绝对路径，也可以是相对 split 文件所在目录的相对路径。若文件缺失，数据集会直接抛出清晰错误，不会自动生成假数据。
+## Model Variants
 
-## 训练入口
+| Experiment | Input | Depth Fusion | Purpose |
+| --- | --- | --- | --- |
+| RGB-only | RGB | none | visual baseline |
+| RGBD-concat | RGB + depth | direct input concat | test direct depth input |
+| RGBD-boundary | RGB + depth | Sobel depth boundary residual fusion | main method |
+
+Valid `--variant` values:
+
+```text
+rgb
+rgbd_concat
+rgbd_boundary
+```
+
+## Experiment Commands
+
+GPU fast development run:
 
 ```bash
-python scripts/train.py \
-  --train_split path/to/train.txt \
-  --val_split path/to/val.txt \
-  --accelerator gpu \
-  --devices 1
+python scripts/train.py --data_dir data/nyu5 --variant rgbd_boundary --experiment_name sanity_gpu --accelerator gpu --devices 1 --batch_size 2 --fast_dev_run
 ```
 
-CPU 快速调试可用：
+RGB baseline:
 
 ```bash
-python scripts/train.py \
-  --train_split path/to/train.txt \
-  --val_split path/to/val.txt \
-  --accelerator cpu \
-  --devices 1 \
-  --fast_dev_run
+python scripts/train.py --data_dir data/nyu5 --variant rgb --experiment_name exp01_rgb --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
 ```
 
-## 当前范围
+RGBD concat:
 
-已包含：
+```bash
+python scripts/train.py --data_dir data/nyu5 --variant rgbd_concat --experiment_name exp02_rgbd_concat --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
+```
 
-- NYU40 到 5 类的基础标签映射
-- RGB-D 数据读取与同步几何变换
-- 轻量 RGB-D 语义分割模型
-- Cross Entropy + Dice loss
-- confusion matrix、pixel accuracy、mean accuracy、per-class IoU、mIoU
-- Lightning 训练/验证/测试包装
-- 空间占用风险分析
-- 基于分割 mask 的 obstacle 连通域区域框
-- synthetic-only smoke/demo/tests
+RGBD boundary main method:
 
-暂未包含：
+```bash
+python scripts/train.py --data_dir data/nyu5 --variant rgbd_boundary --experiment_name exp03_rgbd_boundary --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
+```
 
-- 正式数据集下载与预处理脚本
-- 正式训练实验与 checkpoint
-- 小程序、报告、视频处理
-- 更复杂的增强、蒸馏、量化或部署优化
+Plot training curves:
+
+```bash
+python scripts/plot_training_curves.py --run_dir outputs/runs/exp03_rgbd_boundary
+```
+
+Evaluate the test set:
+
+```bash
+python scripts/evaluate.py --data_dir data/nyu5 --split_file data/nyu5/splits/test.txt --checkpoint outputs/runs/exp03_rgbd_boundary/checkpoints/best.ckpt --variant rgbd_boundary --batch_size 4 --accelerator gpu --devices 1
+```
+
+Prediction visualization:
+
+```bash
+python scripts/predict_folder.py --data_dir data/nyu5 --split_file data/nyu5/splits/test.txt --checkpoint outputs/runs/exp03_rgbd_boundary/checkpoints/best.ckpt --variant rgbd_boundary --num_samples 8 --out_dir outputs/runs/exp03_rgbd_boundary/predictions
+```
+
+## Outputs
+
+Training outputs are written to:
+
+```text
+outputs/runs/{experiment_name}/
+  metrics.csv
+  checkpoints/best.ckpt
+```
+
+Generated data, logs, checkpoints, figures, and local MAT files are ignored by Git.

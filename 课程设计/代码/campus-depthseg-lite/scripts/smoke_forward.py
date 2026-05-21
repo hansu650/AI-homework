@@ -20,6 +20,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", default="cpu", help="Device, e.g. cpu or cuda:0.")
     parser.add_argument("--height", type=int, default=128)
     parser.add_argument("--width", type=int, default=160)
+    parser.add_argument("--variant", default="rgbd_boundary")
     return parser.parse_args()
 
 
@@ -34,7 +35,7 @@ def main() -> None:
     args = parse_args()
     device = validate_device(args.device)
 
-    model = CampusDepthSegLite().to(device)
+    model = CampusDepthSegLite(variant=args.variant).to(device)
     model.eval()
 
     rgb = torch.rand(2, 3, args.height, args.width, device=device)
@@ -45,6 +46,7 @@ def main() -> None:
 
     param_count = sum(parameter.numel() for parameter in model.parameters())
     print(f"device: {device}")
+    print(f"variant: {args.variant}")
     print(f"parameters: {param_count:,}")
     print(f"output_shape: {tuple(logits.shape)}")
 

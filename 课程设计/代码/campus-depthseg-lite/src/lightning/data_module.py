@@ -19,6 +19,7 @@ class NYU5DataModule(LightningDataModule):
         train_split: str | Path | None = None,
         val_split: str | Path | None = None,
         test_split: str | Path | None = None,
+        data_dir: str | Path | None = None,
         image_size: tuple[int, int] = IMAGE_SIZE,
         batch_size: int = BATCH_SIZE,
         num_workers: int = NUM_WORKERS,
@@ -27,6 +28,7 @@ class NYU5DataModule(LightningDataModule):
         self.train_split = train_split
         self.val_split = val_split
         self.test_split = test_split
+        self.data_dir = data_dir
         self.image_size = image_size
         self.batch_size = batch_size
         self.num_workers = num_workers
@@ -39,11 +41,13 @@ class NYU5DataModule(LightningDataModule):
                 raise ValueError("val_split is required for validation")
             self.train_dataset = NYU5Dataset(
                 self.train_split,
+                data_dir=self.data_dir,
                 image_size=self.image_size,
                 training=True,
             )
             self.val_dataset = NYU5Dataset(
                 self.val_split,
+                data_dir=self.data_dir,
                 image_size=self.image_size,
                 training=False,
             )
@@ -52,6 +56,7 @@ class NYU5DataModule(LightningDataModule):
                 raise ValueError("test_split is required for testing")
             self.test_dataset = NYU5Dataset(
                 self.test_split,
+                data_dir=self.data_dir,
                 image_size=self.image_size,
                 training=False,
             )

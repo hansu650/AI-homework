@@ -8,7 +8,7 @@ from lightning import LightningModule
 from src.config import LEARNING_RATE, NUM_CLASSES, WEIGHT_DECAY
 from src.models.campus_depthseg_lite import CampusDepthSegLite
 from src.utils.losses import SegmentationLoss
-from src.utils.metrics import confusion_matrix, mean_iou, pixel_accuracy
+from src.utils.metrics import confusion_matrix, mean_accuracy, mean_iou, pixel_accuracy
 
 
 class LitSegmentation(LightningModule):
@@ -19,10 +19,11 @@ class LitSegmentation(LightningModule):
         learning_rate: float = LEARNING_RATE,
         weight_decay: float = WEIGHT_DECAY,
         num_classes: int = NUM_CLASSES,
+        variant: str = "rgbd_boundary",
     ) -> None:
         super().__init__()
         self.save_hyperparameters()
-        self.model = CampusDepthSegLite(num_classes=num_classes)
+        self.model = CampusDepthSegLite(num_classes=num_classes, variant=variant)
         self.loss_fn = SegmentationLoss(num_classes=num_classes)
         self.num_classes = num_classes
         self.val_confmat = torch.zeros(num_classes, num_classes, dtype=torch.long)
@@ -34,7 +35,14 @@ class LitSegmentation(LightningModule):
     def training_step(self, batch: dict[str, torch.Tensor], batch_idx: int) -> torch.Tensor:
         logits = self(batch["rgb"], batch["depth"])
         loss = self.loss_fn(logits, batch["label"])
-        self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log(
+            "train_loss",
+            loss,
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            batch_size=batch["rgb"].shape[0],
+        )
         return loss
 
     def validation_step(
@@ -46,7 +54,14 @@ class LitSegmentation(LightningModule):
         loss = self.loss_fn(logits, batch["label"])
         matrix = confusion_matrix(logits.detach(), batch["label"], self.num_classes)
         self.val_confmat = self.val_confmat.to(matrix.device) + matrix
-        self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log(
+            "val_loss",
+            loss,
+            on_step=False,
+            on_epoch=True,
+            prog_bar=True,
+            batch_size=batch["rgb"].shape[0],
+        )
         return loss
 
     def on_validation_epoch_start(self) -> None:
@@ -60,13 +75,20 @@ class LitSegmentation(LightningModule):
     def on_validation_epoch_end(self) -> None:
         self.log("val_mIoU", mean_iou(self.val_confmat), prog_bar=True)
         self.log("val_pixel_acc", pixel_accuracy(self.val_confmat), prog_bar=True)
+        self.log("val_mean_acc", mean_accuracy(self.val_confmat), prog_bar=True)
 
     def test_step(self, batch: dict[str, torch.Tensor], batch_idx: int) -> torch.Tensor:
         logits = self(batch["rgb"], batch["depth"])
         loss = self.loss_fn(logits, batch["label"])
         matrix = confusion_matrix(logits.detach(), batch["label"], self.num_classes)
         self.test_confmat = self.test_confmat.to(matrix.device) + matrix
-        self.log("test_loss", loss, on_step=False, on_epoch=True)
+        self.log(
+            "test_loss",
+            loss,
+            on_step=False,
+            on_epoch=True,
+            batch_size=batch["rgb"].shape[0],
+        )
         return loss
 
     def on_test_epoch_start(self) -> None:
@@ -80,6 +102,7 @@ class LitSegmentation(LightningModule):
     def on_test_epoch_end(self) -> None:
         self.log("test_mIoU", mean_iou(self.test_confmat))
         self.log("test_pixel_acc", pixel_accuracy(self.test_confmat))
+        self.log("test_mean_acc", mean_accuracy(self.test_confmat))
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
         return torch.optim.AdamW(

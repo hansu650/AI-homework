@@ -16,7 +16,7 @@ def test_inspection_high_risk_summary_and_boxes():
     assert result.risk_level == "high"
     assert result.lower_floor_ratio > 0.0
     assert result.lower_obstacle_ratio > 0.5
-    assert "障碍物" in result.summary or "遮挡" in result.summary
+    assert "\u969c\u788d\u7269" in result.summary or "\u906e\u6321" in result.summary
     assert len(boxes) == 1
     x1, y1, x2, y2, area = boxes[0]
     assert (x1, y1) == (0, 10)

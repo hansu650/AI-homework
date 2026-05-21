@@ -80,11 +80,11 @@ def _summary(
     obstacle_ratio: float,
 ) -> str:
     if lower_floor_ratio < 0.30 and lower_obstacle_ratio > 0.25:
-        return "画面下方地面可见率较低，疑似通道遮挡较明显。"
+        return "\u753b\u9762\u4e0b\u65b9\u5730\u9762\u53ef\u89c1\u7387\u8f83\u4f4e\uff0c\u7591\u4f3c\u901a\u9053\u906e\u6321\u8f83\u660e\u663e\u3002"
     if lower_obstacle_ratio > 0.35:
-        return "画面下方障碍物占比较高，建议重点检查通行空间。"
+        return "\u753b\u9762\u4e0b\u65b9\u969c\u788d\u7269\u5360\u6bd4\u8f83\u9ad8\uff0c\u5efa\u8bae\u91cd\u70b9\u68c0\u67e5\u901a\u884c\u7a7a\u95f4\u3002"
     if lower_floor_ratio < 0.35:
-        return "画面下方地面可见率偏低，通道可通行性需要复核。"
+        return "\u753b\u9762\u4e0b\u65b9\u5730\u9762\u53ef\u89c1\u7387\u504f\u4f4e\uff0c\u901a\u9053\u53ef\u901a\u884c\u6027\u9700\u8981\u590d\u6838\u3002"
     if obstacle_ratio > 0.25:
-        return "画面中障碍物较多，但下方通行区域仍需结合现场确认。"
-    return "画面下方地面可见率较高，当前通行风险较低。"
+        return "\u753b\u9762\u4e2d\u969c\u788d\u7269\u8f83\u591a\uff0c\u4f46\u4e0b\u65b9\u901a\u884c\u533a\u57df\u4ecd\u9700\u7ed3\u5408\u73b0\u573a\u786e\u8ba4\u3002"
+    return "\u753b\u9762\u4e0b\u65b9\u5730\u9762\u53ef\u89c1\u7387\u8f83\u9ad8\uff0c\u5f53\u524d\u901a\u884c\u98ce\u9669\u8f83\u4f4e\u3002"

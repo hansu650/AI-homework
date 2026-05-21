@@ -32,6 +32,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--depth", required=True)
     parser.add_argument("--output", default=str(PROJECT_ROOT / "outputs" / "figures" / "prediction_mask.png"))
     parser.add_argument("--device", default="cpu")
+    parser.add_argument("--variant", default="rgbd_boundary")
     parser.add_argument("--image_height", type=int, default=IMAGE_SIZE[0])
     parser.add_argument("--image_width", type=int, default=IMAGE_SIZE[1])
     return parser.parse_args()
@@ -73,7 +74,11 @@ def main() -> None:
     rgb = rgb_to_tensor(rgb_image).unsqueeze(0).to(device)
     depth = depth_to_tensor(depth_image).unsqueeze(0).to(device)
 
-    model = LitSegmentation.load_from_checkpoint(str(checkpoint), map_location=device)
+    model = LitSegmentation.load_from_checkpoint(
+        str(checkpoint),
+        map_location=device,
+        variant=args.variant,
+    )
     model.to(device)
     model.eval()
 

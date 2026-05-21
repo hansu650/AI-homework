@@ -1,4 +1,4 @@
-"""A compact four-stage RGB-D encoder implemented from scratch."""
+"""A compact four-stage encoder implemented from scratch."""
 
 from __future__ import annotations
 
@@ -76,7 +76,7 @@ class EncoderStage(nn.Module):
 
 
 class MiniHierarchicalEncoder(nn.Module):
-    """Four-stage lightweight encoder for concatenated RGB-D input."""
+    """Four-stage lightweight encoder."""
 
     def __init__(
         self,
@@ -93,8 +93,7 @@ class MiniHierarchicalEncoder(nn.Module):
         self.stages = nn.ModuleList(stages)
         self.out_channels = channels
 
-    def forward(self, rgb: torch.Tensor, depth: torch.Tensor) -> list[torch.Tensor]:
-        x = torch.cat([rgb, depth], dim=1)
+    def forward(self, x: torch.Tensor) -> list[torch.Tensor]:
         features = []
         for stage in self.stages:
             x = stage(x)

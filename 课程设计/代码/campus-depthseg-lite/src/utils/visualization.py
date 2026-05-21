@@ -85,7 +85,7 @@ def save_inspection_panel(
 
     fig, axes = plt.subplots(2, 3, figsize=(12, 7), constrained_layout=True)
     panels = [
-        ("RGB 原图", rgb),
+        ("RGB", rgb),
         ("Depth / pseudo depth", depth),
         ("Prediction mask", prediction),
         ("Occupancy map", occupancy),
@@ -106,7 +106,7 @@ def save_inspection_panel(
     text_axis.text(
         0.02,
         0.92,
-        f"巡检摘要\n\n{summary}\n\n类别\n{legend}",
+        f"Inspection summary\n\n{summary}\n\nClasses\n{legend}",
         va="top",
         ha="left",
         fontsize=11,
