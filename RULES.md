@@ -1,8 +1,10 @@
-# 协作规则
+# Collaboration Rules
 
-## Git 提交与推送
+## Git Commit And Push
 
-- 每次完成代码或文档改动并验证后，默认执行 `git status` 检查改动范围。
-- 只暂存本次任务相关文件，不自动纳入无关改动。
-- 暂存后提交一个清晰的 commit，并推送到当前分支的远端。
-- 如果推送失败、远端不可用、存在冲突或需要用户决策，应直接说明原因并等待确认。
+- After each completed code or documentation task, run `git status` and review the change scope.
+- Stage only files related to the current task. Do not stage unrelated user changes.
+- Create a clear commit after verification succeeds.
+- Push the current branch to its remote after the commit succeeds.
+- Do not commit local datasets, generated outputs, checkpoints, caches, or other large runtime artifacts.
+- If commit or push fails because of conflicts, authentication, network, or a required user decision, explain the blocker and wait for confirmation.
