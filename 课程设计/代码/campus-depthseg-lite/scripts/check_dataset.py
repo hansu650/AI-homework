@@ -27,6 +27,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data_dir", default="data/nyu5")
     parser.add_argument("--split", default="train")
     parser.add_argument("--num_samples", type=int, default=2)
+    parser.add_argument("--output", default=None)
     return parser.parse_args()
 
 
@@ -62,7 +63,12 @@ def main() -> None:
         print(f"  label unique: {np.unique(label.numpy()).tolist()}")
         rows.append((rgb.numpy(), depth.numpy(), label.numpy()))
 
-    output_path = PROJECT_ROOT / "outputs" / "figures" / "dataset_check.png"
+    if args.output is None:
+        output_path = PROJECT_ROOT / "outputs" / "figures" / f"dataset_check_{args.split}.png"
+    else:
+        output_path = Path(args.output)
+        if not output_path.is_absolute():
+            output_path = PROJECT_ROOT / output_path
     output_path.parent.mkdir(parents=True, exist_ok=True)
     _save_check_figure(rows, output_path)
     print(f"dataset check figure saved: {output_path}")

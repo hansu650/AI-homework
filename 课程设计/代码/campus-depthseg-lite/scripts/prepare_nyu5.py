@@ -7,6 +7,11 @@ import random
 import sys
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
@@ -102,6 +107,12 @@ def main() -> None:
     print("Class pixel counts:")
     for class_id, class_name in enumerate(CLASS_NAMES):
         print(f"  {class_id} {class_name}: {int(class_pixel_counts[class_id])}")
+    proportions = _class_proportions(class_pixel_counts)
+    print("Class pixel ratios:")
+    for class_id, class_name in enumerate(CLASS_NAMES):
+        print(f"  {class_id} {class_name}: {proportions[class_id]:.6f}")
+
+    _save_class_distribution(class_pixel_counts, proportions)
 
 
 def _validate_ratios(train_ratio: float, val_ratio: float) -> None:
@@ -136,6 +147,44 @@ def _split_records(
         "val": [records[index] for index in val_indices],
         "test": [records[index] for index in test_indices],
     }
+
+
+def _class_proportions(class_pixel_counts: np.ndarray) -> np.ndarray:
+    total = int(class_pixel_counts.sum())
+    if total <= 0:
+        raise ValueError("Class pixel count total is zero")
+    return class_pixel_counts.astype(np.float64) / float(total)
+
+
+def _save_class_distribution(
+    class_pixel_counts: np.ndarray,
+    proportions: np.ndarray,
+) -> None:
+    output_dir = PROJECT_ROOT / "outputs" / "figures"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    txt_path = output_dir / "nyu5_class_distribution.txt"
+    png_path = output_dir / "nyu5_class_distribution.png"
+
+    lines = ["class_id\tclass_name\tpixel_count\tpixel_ratio"]
+    for class_id, class_name in enumerate(CLASS_NAMES):
+        lines.append(
+            f"{class_id}\t{class_name}\t{int(class_pixel_counts[class_id])}\t"
+            f"{proportions[class_id]:.8f}"
+        )
+    txt_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    fig, axis = plt.subplots(figsize=(8, 4.5))
+    axis.bar(CLASS_NAMES, proportions)
+    axis.set_ylabel("pixel ratio")
+    axis.set_ylim(0.0, max(0.05, float(proportions.max()) * 1.15))
+    axis.set_title("NYU5 class distribution")
+    axis.tick_params(axis="x", rotation=20)
+    fig.tight_layout()
+    fig.savefig(png_path, dpi=150)
+    plt.close(fig)
+
+    print(f"Class distribution txt: {txt_path}")
+    print(f"Class distribution png: {png_path}")
 
 
 if __name__ == "__main__":

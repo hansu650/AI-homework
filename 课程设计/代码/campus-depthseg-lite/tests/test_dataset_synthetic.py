@@ -6,6 +6,7 @@ from PIL import Image
 
 from src.config import IGNORE_INDEX
 from src.datasets.nyu5_dataset import NYU5Dataset
+from src.utils.label_mapping import remap_label_by_id
 
 
 def test_dataset_reads_synthetic_files_and_maps_labels(tmp_path: Path):
@@ -87,3 +88,11 @@ def test_dataset_reads_nyu5_split_relative_to_data_dir(tmp_path: Path):
     assert sample["depth"].shape == (1, 8, 10)
     assert sample["label"][0, 0].item() == 4
     assert sample["label"][0, 1].item() == IGNORE_INDEX
+
+
+def test_remap_label_maps_raw_255_when_mapping_exists():
+    label = np.array([[0, 255]], dtype=np.int64)
+    mapped = remap_label_by_id(label, {0: 0, 255: 3})
+
+    assert mapped[0, 0] == 0
+    assert mapped[0, 1] == 3

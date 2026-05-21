@@ -30,6 +30,7 @@ NYU_NAME_KEYWORDS_TO_5 = {
         "box",
         "bag",
         "clothes",
+        "book",
         "books",
         "paper",
         "pillow",

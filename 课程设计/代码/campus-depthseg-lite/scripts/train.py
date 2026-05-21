@@ -67,6 +67,7 @@ def main() -> None:
         callbacks=[checkpoint],
         logger=logger,
         log_every_n_steps=10,
+        enable_progress_bar=False,
     )
     trainer.fit(model, datamodule=data_module)
 

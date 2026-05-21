@@ -1,0 +1,10 @@
+data/
+outputs/
+lightning_logs/
+wandb/
+*.ckpt
+*.pt
+*.pth
+*.mat
+__pycache__/
+.pytest_cache/
