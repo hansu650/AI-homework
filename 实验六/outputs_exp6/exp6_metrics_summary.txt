@@ -1,0 +1,1 @@
+实验六：MNIST GAN 训练摘要数据来源：本地数据：C:\Users\qintian\Desktop\人工智能\实验六\MNIST训练样本数：60000运行设备：cuda随机种子：42Epoch：50Batch Size：64学习率：0.0002噪声维度：100采样间隔：5最终一轮指标：D_loss：1.148374G_loss：1.119801D_loss_real：0.578614D_loss_fake：0.569760D(x)：0.608343D(G(z))：0.384678
