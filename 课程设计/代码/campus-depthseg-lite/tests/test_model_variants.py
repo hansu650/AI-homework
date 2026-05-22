@@ -5,7 +5,10 @@ from src.config import NUM_CLASSES
 from src.models.campus_depthseg_lite import CampusDepthSegLite
 
 
-@pytest.mark.parametrize("variant", ["rgb", "rgbd_concat", "rgbd_boundary"])
+@pytest.mark.parametrize(
+    "variant",
+    ["rgb", "rgbd_concat", "rgbd_boundary", "rgbd_concat_boundary"],
+)
 def test_model_variants_forward_cpu(variant: str):
     model = CampusDepthSegLite(variant=variant)
     model.eval()

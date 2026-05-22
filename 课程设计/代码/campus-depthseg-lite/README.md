@@ -10,7 +10,7 @@ Current scope:
 
 - NYUDepthV2 MAT inspection and local export to five classes.
 - RGB-D dataset loading and synchronized transforms.
-- Lightweight segmentation model with three experiment variants.
+- Lightweight segmentation model with four experiment variants.
 - Lightning training wrapper, CSV logs, best-checkpoint path, metric logging.
 - Curve plotting, test-set evaluation, and prediction panels.
 - CPU smoke tests and synthetic demos.
@@ -65,6 +65,7 @@ images/000001.png depths/000001.png labels/000001.png
 | RGB-only | RGB | none | visual baseline |
 | RGBD-concat | RGB + depth | direct input concat | test direct depth input |
 | RGBD-boundary | RGB + depth | Sobel depth boundary residual fusion | main method |
+| RGBD-concat-boundary | RGB + depth | input concat + Sobel boundary residual fusion | test complementarity |
 
 Valid `--variant` values:
 
@@ -72,6 +73,7 @@ Valid `--variant` values:
 rgb
 rgbd_concat
 rgbd_boundary
+rgbd_concat_boundary
 ```
 
 ## Experiment Commands
@@ -98,6 +100,12 @@ RGBD boundary main method:
 
 ```bash
 python scripts/train.py --data_dir data/nyu5 --variant rgbd_boundary --experiment_name exp03_rgbd_boundary --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
+```
+
+RGBD concat + boundary complementarity:
+
+```bash
+python scripts/train.py --data_dir data/nyu5 --variant rgbd_concat_boundary --experiment_name exp04_rgbd_concat_boundary_e20 --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
 ```
 
 Plot training curves:

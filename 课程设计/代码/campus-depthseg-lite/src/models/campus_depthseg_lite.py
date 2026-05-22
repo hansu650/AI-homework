@@ -10,7 +10,9 @@ from src.models.depth_boundary_fusion import DepthBoundaryResidualFusion
 from src.models.mini_encoder import MiniHierarchicalEncoder
 from src.models.weighted_fpn_decoder import WeightedFPNDecoder
 
-VALID_VARIANTS = ("rgb", "rgbd_concat", "rgbd_boundary")
+VALID_VARIANTS = ("rgb", "rgbd_concat", "rgbd_boundary", "rgbd_concat_boundary")
+CONCAT_VARIANTS = {"rgbd_concat", "rgbd_concat_boundary"}
+BOUNDARY_VARIANTS = {"rgbd_boundary", "rgbd_concat_boundary"}
 
 
 class CampusDepthSegLite(nn.Module):
@@ -28,14 +30,14 @@ class CampusDepthSegLite(nn.Module):
             raise ValueError(f"variant must be one of {VALID_VARIANTS}, got {variant}")
 
         self.variant = variant
-        in_channels = 4 if variant == "rgbd_concat" else 3
+        in_channels = 4 if variant in CONCAT_VARIANTS else 3
         self.encoder = MiniHierarchicalEncoder(
             in_channels=in_channels,
             channels=encoder_channels,
         )
         self.depth_fusion = (
             DepthBoundaryResidualFusion(encoder_channels)
-            if variant == "rgbd_boundary"
+            if variant in BOUNDARY_VARIANTS
             else None
         )
         self.decoder = WeightedFPNDecoder(
@@ -47,12 +49,12 @@ class CampusDepthSegLite(nn.Module):
     def forward(self, rgb: torch.Tensor, depth: torch.Tensor | None = None) -> torch.Tensor:
         if rgb.ndim != 4 or rgb.shape[1] != 3:
             raise ValueError(f"rgb must have shape [B, 3, H, W], got {tuple(rgb.shape)}")
-        if self.variant in {"rgbd_concat", "rgbd_boundary"}:
+        if self.variant != "rgb":
             self._validate_depth(rgb, depth)
 
         if self.variant == "rgb":
             encoder_input = rgb
-        elif self.variant == "rgbd_concat":
+        elif self.variant in CONCAT_VARIANTS:
             encoder_input = torch.cat([rgb, depth], dim=1)
         else:
             encoder_input = rgb
@@ -65,7 +67,7 @@ class CampusDepthSegLite(nn.Module):
     @staticmethod
     def _validate_depth(rgb: torch.Tensor, depth: torch.Tensor | None) -> None:
         if depth is None:
-            raise ValueError("depth is required for rgbd_concat and rgbd_boundary variants")
+            raise ValueError("depth is required for RGB-D variants")
         if depth.ndim != 4 or depth.shape[1] != 1:
             raise ValueError(
                 f"depth must have shape [B, 1, H, W], got {tuple(depth.shape)}"
