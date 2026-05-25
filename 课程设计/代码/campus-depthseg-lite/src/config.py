@@ -67,7 +67,7 @@ NYU40_TO_5 = {
     23: 3,  # books
     24: 3,  # refrigerator
     25: 3,  # television
-    26: 3,  # paper
+    26: 3,  # loose document object
     27: 3,  # towel
     28: 4,  # shower curtain
     29: 3,  # box

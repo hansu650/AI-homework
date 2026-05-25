@@ -2,7 +2,7 @@
 
 Lightweight RGB-D semantic segmentation and occupancy analysis for campus indoor inspection.
 
-This repository is a clean-room course-design project. It does not copy, import, or depend on code from `hansu650/Lun-Wen`, DFormer, DFormerv2, CMX, ESANet, TokenFusion, or other paper repositories.
+This repository is an independent course-design implementation. It does not copy, import, or depend on private research code, unreleased project code, or external research-project source code. Data processing, model definition, training, evaluation, and visualization modules are written specifically for this course project.
 
 ## Scope
 
