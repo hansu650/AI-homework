@@ -1,0 +1,190 @@
+\documentclass[UTF8,a4paper,12pt]{ctexart}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{pdflscape}
+\usepackage{float}
+\usepackage{hyperref}
+\setstretch{1.5}
+\hypersetup{hidelinks}
+\title{面向校园室内空间巡检的轻量 RGB-D 语义分割与空间占用分析系统}
+\author{易唯 \\ 学号：202231116020106 \\ 计算机科学与技术2022级}
+\date{2026年6月}
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\newpage
+\section*{摘 要}
+本课程设计关注校园室内空间巡检中的通道遮挡和物品堆放问题。项目使用 NYUDepthV2 数据集，将原始室内标签整理为 other、floor、wall、obstacle、door\_window 五类，并实现轻量 RGB-D 语义分割模型 CampusDepthSegLite。实验比较 RGB-only、RGBD-concat、RGBD-boundary 和 RGBD-concat-boundary 四种变体。结果显示，RGBD-concat 整体最好，test mIoU 为 0.4683；RGBD-concat-boundary 的 obstacle IoU 最高，为 0.4899。自采集校园图像仅用于定性展示，不参与训练和定量评价。
+
+\textbf{关键词：} RGB-D 语义分割；校园巡检；空间占用分析；轻量模型；卷积神经网络
+\newpage
+\tableofcontents
+\newpage
+
+\section{引言}
+这次课程设计的出发点比较直观：校园室内空间中经常会出现桌椅、箱包或杂物临时占用通道的情况。人工巡检可以发现这些问题，但记录方式不够稳定，也很难量化地面可见率和障碍物比例。结合课程中关于人工智能应用边界的讨论，本项目没有把模型作为安全决策系统，而是把它定位为巡检辅助工具。
+
+\section{相关理论与课程知识对应}
+课程中的机器学习基础部分强调数据、模型、损失函数、优化器和评价指标构成一条完整流程。本项目也沿着这条流程完成：从 NYUDepthV2 导出 RGB-D 样本，设计轻量分割模型，使用 CrossEntropyLoss 与 DiceLoss 训练，并用 mIoU、Pixel Acc、Mean Acc 和 per-class IoU 评价。卷积神经网络课件中介绍的局部感受野和权重共享思想，是本项目选择轻量 CNN encoder 的主要课程基础。
+
+\section{数据集与预处理}
+本项目从 nyu\_depth\_v2\_labeled.mat 导出 1449 张样本，其中 train 1014 张、val 217 张、test 218 张。输入尺寸统一为 240 x 320。五类标签分别为 other、floor、wall、obstacle 和 door\_window。
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.9\linewidth]{../outputs/figures/nyu5_class_distribution.png}
+\caption{NYU5 五类标签像素分布}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[height=0.78\textheight]{../outputs/report_pdf_assets/nyu5_gallery_train_readable.png}
+\caption{训练集样例可视化（报告放大版）}
+\end{figure}
+
+\section{模型设计与系统实现}
+CampusDepthSegLite 由四阶段轻量编码器和 Weighted-FPN 解码器构成。编码器通道为 [48, 96, 192, 384]，解码器通道为 128。四种模型变体分别用于验证 RGB、完整 depth、深度边界和二者组合的作用。
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\linewidth]{../outputs/report_pdf_assets/campus_depthseg_lite_architecture.png}
+\caption{CampusDepthSegLite 系统结构示意图}
+\end{figure}
+
+\begin{table}[H]\centering
+\caption{模型复杂度统计}
+\begin{tabular}{lcc}\toprule
+Variant & Params & Params (M) \\\midrule
+rgb & 1,511,689 & 1.5117 M \\
+rgbd\_concat & 1,512,121 & 1.5121 M \\
+rgbd\_boundary & 1,512,413 & 1.5124 M \\
+rgbd\_concat\_boundary & 1,512,845 & 1.5128 M \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{实验结果与分析}
+\begin{figure}[H]\centering
+\includegraphics[width=0.82\linewidth]{../outputs/report_pdf_assets/rgbd_concat_training_curves_panel.png}
+\caption{RGBD-concat 训练曲线汇总}
+\end{figure}
+
+\begin{table}[H]\centering
+\caption{四种模型变体测试集结果}
+\begin{tabular}{llllccc}\toprule
+Method & Input & Fusion & mIoU & Pixel Acc & Mean Acc & Test Loss \\\midrule
+RGB-only & RGB & 无 & 0.4226 & 0.5964 & 0.5881 & 1.5588 \\
+RGBD-concat & RGB+Depth & 直接拼接 & 0.4683 & 0.6318 & 0.6294 & 1.4205 \\
+RGBD-boundary & RGB+Depth & 深度边界残差 & 0.4206 & 0.5974 & 0.5925 & 1.5317 \\
+RGBD-concat-boundary & RGB+Depth & 拼接+边界残差 & 0.4605 & 0.6271 & 0.6191 & 1.4378 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+RGBD-concat 是整体最佳模型，mIoU 为 0.4683，相比 RGB-only 提升 4.57 个百分点。RGBD-concat-boundary 的 obstacle IoU 最高，说明深度边界对障碍区域有帮助，但它整体没有超过 RGBD-concat。
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\linewidth]{../outputs/report_pdf_assets/method_comparison_top.png}
+\caption{四种方法预测对比（一，报告放大版）}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\linewidth]{../outputs/report_pdf_assets/method_comparison_bottom.png}
+\caption{四种方法预测对比（二，报告放大版）}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.78\linewidth]{../outputs/report_assets/confusion_matrix/confusion_matrix_normalized.png}
+\caption{最佳模型归一化混淆矩阵}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.95\linewidth]{../outputs/report_assets/error_cases/best_cases.png}
+\caption{测试集中表现较好的样例}
+\end{figure}
+
+\section{自采集校园场景定性展示}
+自采集图片没有像素级 GT，也没有真实 depth，因此不参与训练、验证或测试，不计算 mIoU、Pixel Acc 或 Mean Acc。这里使用 RGB-only checkpoint，只展示系统可视化流程。
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_001.png}
+\caption{自采集校园场景 001}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_002.png}
+\caption{自采集校园场景 002}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_003.png}
+\caption{自采集校园场景 003}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_004.png}
+\caption{自采集校园场景 004}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_005.png}
+\caption{自采集校园场景 005}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_006.png}
+\caption{自采集校园场景 006}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_007.png}
+\caption{自采集校园场景 007}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_008.png}
+\caption{自采集校园场景 008}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_009.png}
+\caption{自采集校园场景 009}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_010.png}
+\caption{自采集校园场景 010}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_011.png}
+\caption{自采集校园场景 011}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_012.png}
+\caption{自采集校园场景 012}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_013.png}
+\caption{自采集校园场景 013}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_014.png}
+\caption{自采集校园场景 014}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=0.92\linewidth]{../outputs/report_assets/campus_demo/campus_demo_015.png}
+\caption{自采集校园场景 015}
+\end{figure}
+
+\section{总结与展望}
+本课程设计完成了数据准备、模型设计、消融实验、空间占用分析和真实校园照片定性展示。当前结果说明完整 depth 信息比单纯深度边界更加稳定，边界信息对 obstacle 有帮助但不是整体最优。后续可以采集带真实 depth 和像素级标注的校园数据，并把风险评分规则设计得更细。
+
+\begin{thebibliography}{99}
+\bibitem{nyu} Silberman N, Hoiem D, Kohli P, et al. Indoor segmentation and support inference from RGBD images[C]//ECCV. 2012.
+\bibitem{fcn} Long J, Shelhamer E, Darrell T. Fully convolutional networks for semantic segmentation[C]//CVPR. 2015.
+\bibitem{unet} Ronneberger O, Fischer P, Brox T. U-Net: convolutional networks for biomedical image segmentation[C]//MICCAI. 2015.
+\bibitem{deeplab} Chen L C, Zhu Y, Papandreou G, et al. Encoder-decoder with atrous separable convolution for semantic image segmentation[C]//ECCV. 2018.
+\bibitem{fpn} Lin T Y, Dollar P, Girshick R, et al. Feature pyramid networks for object detection[C]//CVPR. 2017.
+\bibitem{resnet} He K, Zhang X, Ren S, et al. Deep residual learning for image recognition[C]//CVPR. 2016.
+\bibitem{segnet} Badrinarayanan V, Kendall A, Cipolla R. SegNet[J]. IEEE TPAMI, 2017.
+\bibitem{fusenet} Hazirbas C, Ma L, Domokos C, et al. FuseNet[C]//ACCV. 2016.
+\bibitem{esanet} Seichter D, Kohler M, Lewandowski B, et al. Efficient RGB-D semantic segmentation for indoor scene analysis[C]//ICRA. 2021.
+\bibitem{pytorch} Paszke A, Gross S, Massa F, et al. PyTorch[C]//NeurIPS. 2019.
+\bibitem{adam} Kingma D P, Ba J. Adam: a method for stochastic optimization[C]//ICLR. 2015.
+\bibitem{dice} Milletari F, Navab N, Ahmadi S A. V-Net[C]//3DV. 2016.
+\bibitem{course1} 王雷春. 第1章 人工智能导论[Z]. 《人工智能技术与应用》课程课件, 2026.
+\bibitem{course2} 王雷春. 第2章 机器学习基础[Z]. 《人工智能技术与应用》课程课件, 2026.
+\bibitem{course3} 王雷春. 第3章 神经网络基础[Z]. 《人工智能技术与应用》课程课件, 2026.
+\bibitem{course4} 王雷春. 第4章 卷积神经网络及应用[Z]. 《人工智能技术与应用》课程课件, 2026.
+\end{thebibliography}
+\end{document}
