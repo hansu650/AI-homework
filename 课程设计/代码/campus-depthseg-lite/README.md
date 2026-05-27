@@ -13,13 +13,15 @@ Current scope:
 - Lightweight segmentation model with four experiment variants.
 - Lightning training wrapper, CSV logs, best-checkpoint path, metric logging.
 - Curve plotting, test-set evaluation, and prediction panels.
+- Qualitative self-collected campus RGB demo panels.
 - CPU smoke tests and synthetic demos.
 
 Not included:
 
 - Dataset downloads.
 - Large pretrained model downloads.
-- Formal training results.
+- Training outputs, checkpoints, raw data, and generated report assets are not tracked by Git.
+- Quantitative experiment results are summarized in `EXPERIMENT_RESULTS.md`.
 - Mobile app, video processing, or report text.
 
 ## Setup
@@ -125,6 +127,17 @@ Prediction visualization:
 ```bash
 python scripts/predict_folder.py --data_dir data/nyu5 --split_file data/nyu5/splits/test.txt --checkpoint outputs/runs/exp03_rgbd_boundary/checkpoints/best.ckpt --variant rgbd_boundary --num_samples 8 --out_dir outputs/runs/exp03_rgbd_boundary/predictions
 ```
+
+Campus RGB qualitative demo:
+
+```bash
+python scripts/predict_campus_demo.py --rgb_dir data/campus_demo/rgb --checkpoint outputs/runs/exp01_rgb_e20/checkpoints/best.ckpt --variant rgb --out_dir outputs/report_assets/campus_demo --num_samples 8
+```
+
+The campus demo images have no pixel-level ground truth labels and no real depth.
+They are used only for qualitative visualization with the RGB-only checkpoint.
+They are not used for training, mIoU, pixel accuracy, mean accuracy, or other
+quantitative evaluation.
 
 ## Outputs
 
