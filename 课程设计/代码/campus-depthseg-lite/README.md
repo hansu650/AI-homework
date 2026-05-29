@@ -1,152 +1,198 @@
-# Campus DepthSeg Lite
+<p align="center">
+  <strong>CampusDepthSegLite</strong>
+</p>
 
-Lightweight RGB-D semantic segmentation and occupancy analysis for campus indoor inspection.
+<h1 align="center">校园室内巡检的轻量 RGB-D 语义分割与空间占用分析系统</h1>
 
-This repository is an independent course-design implementation. It does not copy, import, or depend on private research code, unreleased project code, or external research-project source code. Data processing, model definition, training, evaluation, and visualization modules are written specifically for this course project.
+<p align="center">
+  基于 NYUDepthV2 的五类室内空间分割、RGB-D 融合消融实验与校园场景定性展示。
+</p>
 
-## Scope
+<p align="center">
+  <a href="#项目简介">项目简介</a> ·
+  <a href="#方法概览">方法概览</a> ·
+  <a href="#实验结果">实验结果</a> ·
+  <a href="#静态-web-展示页">Web Demo</a> ·
+  <a href="#本地运行">本地运行</a>
+</p>
 
-Current scope:
+---
 
-- NYUDepthV2 MAT inspection and local export to five classes.
-- RGB-D dataset loading and synchronized transforms.
-- Lightweight segmentation model with four experiment variants.
-- Lightning training wrapper, CSV logs, best-checkpoint path, metric logging.
-- Curve plotting, test-set evaluation, and prediction panels.
-- Qualitative self-collected campus RGB demo panels.
-- CPU smoke tests and synthetic demos.
+## 项目亮点
 
-Not included:
+| Best Model | Test mIoU | Dataset | Model Size |
+| --- | ---: | --- | ---: |
+| RGBD-concat | **0.4683** | NYUDepthV2, 1449 samples | about 1.51M params |
 
-- Dataset downloads.
-- Large pretrained model downloads.
-- Training outputs, checkpoints, raw data, and generated report assets are not tracked by Git.
-- Quantitative experiment results are summarized in `EXPERIMENT_RESULTS.md`.
-- Mobile app, video processing, or report text.
+本项目为课程设计独立实现，不复制、导入或依赖任何个人研究代码、未公开工程代码或外部研究项目源码。项目中的数据处理、模型定义、训练流程、评估指标和可视化模块均为课程设计重新编写。
 
-## Setup
+## 项目简介
+
+CampusDepthSegLite 面向校园教室、走廊、实验室和公共空间等室内场景，完成轻量 RGB-D 语义分割与空间占用分析。系统输入 RGB 或 RGB-D 图像，输出五类语义分割结果，并结合地面可见率和障碍物占比生成巡检提示。
+
+五类标签：
+
+| ID | Class |
+| ---: | --- |
+| 0 | other |
+| 1 | floor |
+| 2 | wall |
+| 3 | obstacle |
+| 4 | door_window |
+
+## 方法概览
+
+CampusDepthSegLite 由三部分组成：
+
+- `MiniHierarchicalEncoder`：四阶段轻量卷积编码器，输出多尺度特征。
+- `WeightedFPNDecoder`：统一通道后进行多尺度上采样与可学习权重融合。
+- `DepthBoundaryResidualFusion`：可选深度边界残差融合模块，用 Sobel depth edge 注入多尺度特征。
+
+<p align="center">
+  <img src="web_demo/assets/architecture.png" alt="CampusDepthSegLite architecture" width="760">
+</p>
+
+<p align="center"><em>CampusDepthSegLite 网络结构图</em></p>
+
+## 实验结果
+
+四组实验均使用相同的 NYUDepthV2 五类标签划分。整体结果表明，`RGBD-concat` 取得最佳 mIoU、Pixel Acc 和 Mean Acc；`RGBD-concat-boundary` 在 obstacle 类上有一定优势，但整体没有超过 `RGBD-concat`。
+
+| 方法 | 输入 | 融合方式 | mIoU | Pixel Acc | Mean Acc |
+| --- | --- | --- | ---: | ---: | ---: |
+| RGB-only | RGB | none | 0.4226 | 0.5964 | 0.5881 |
+| **RGBD-concat** | RGB + Depth | direct concat | **0.4683** | **0.6318** | **0.6294** |
+| RGBD-boundary | RGB + Depth | depth edge residual | 0.4206 | 0.5974 | 0.5925 |
+| RGBD-concat-boundary | RGB + Depth | concat + depth edge residual | 0.4605 | 0.6271 | 0.6191 |
+
+训练输出、checkpoint、原始数据和生成的报告素材不纳入 Git 管理。定量实验结果汇总见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)。
+
+## 可视化结果
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="web_demo/assets/training_process.png" alt="training process">
+      <br>
+      <sub>RGBD-concat 训练损失与验证指标曲线</sub>
+    </td>
+    <td width="50%">
+      <img src="web_demo/assets/confusion_matrix.png" alt="confusion matrix">
+      <br>
+      <sub>最佳模型归一化混淆矩阵</sub>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="web_demo/assets/method_comparison.png" alt="method comparison">
+      <br>
+      <sub>四种方法预测结果对比</sub>
+    </td>
+  </tr>
+</table>
+
+## 自采集校园场景展示
+
+自采集校园图片没有像素级 GT，也没有真实 depth，仅用于真实场景下的定性展示，不参与训练、验证、测试或定量评价，不计算 mIoU、Pixel Acc 或 Mean Acc。该部分默认使用 RGB-only checkpoint 展示 Prediction mask、Occupancy map、Risk boxes 和风险提示。
+
+<p align="center">
+  <img src="web_demo/assets/campus_rgb_gallery.png" alt="campus rgb gallery" width="760">
+</p>
+
+<p align="center"><em>自采集校园场景样例总览</em></p>
+
+## 静态 Web 展示页
+
+项目提供了一个轻量静态展示页，用于集中展示模型结构、实验结果、训练曲线和自采集校园场景定性结果。
+
+- 入口文件：[web_demo/index.html](web_demo/index.html)
+- 样式文件：[web_demo/style.css](web_demo/style.css)
+- 页面说明：[web_demo/README.md](web_demo/README.md)
+
+该页面是纯静态 HTML，不做在线推理，不加载 checkpoint，不需要服务器或 GPU。下载项目后可直接双击 `web_demo/index.html` 本地查看。
+
+## 项目结构
+
+```text
+campus-depthseg-lite/
+  README.md
+  EXPERIMENT_RESULTS.md
+  requirements.txt
+  scripts/
+  src/
+    datasets/
+    models/
+    lightning/
+    utils/
+  tests/
+  web_demo/
+    index.html
+    style.css
+    README.md
+    assets/
+```
+
+`data/`、`outputs/`、`lightning_logs/`、`wandb/`、checkpoint 和本地大文件均被 `.gitignore` 忽略。
+
+## 本地运行
+
+安装依赖：
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Quick Checks
+基础检查：
 
 ```bash
 python -m compileall src scripts tests
 pytest -q
 python scripts/smoke_forward.py --device cpu
-python scripts/demo_inspection.py
 ```
 
-## Data Layout
-
-Prepared NYU5 data should live inside the project, but it is ignored by Git:
-
-```text
-data/nyu5/
-  images/
-  depths/
-  labels/
-  splits/
-    train.txt
-    val.txt
-    test.txt
-```
-
-Each split line uses paths relative to `data/nyu5/`:
-
-```text
-images/000001.png depths/000001.png labels/000001.png
-```
-
-## Model Variants
-
-| Experiment | Input | Depth Fusion | Purpose |
-| --- | --- | --- | --- |
-| RGB-only | RGB | none | visual baseline |
-| RGBD-concat | RGB + depth | direct input concat | test direct depth input |
-| RGBD-boundary | RGB + depth | Sobel depth boundary residual fusion | main method |
-| RGBD-concat-boundary | RGB + depth | input concat + Sobel boundary residual fusion | test complementarity |
-
-Valid `--variant` values:
-
-```text
-rgb
-rgbd_concat
-rgbd_boundary
-rgbd_concat_boundary
-```
-
-## Experiment Commands
-
-GPU fast development run:
+测试集评估：
 
 ```bash
-python scripts/train.py --data_dir data/nyu5 --variant rgbd_boundary --experiment_name sanity_gpu --accelerator gpu --devices 1 --batch_size 2 --fast_dev_run
+python scripts/evaluate.py --data_dir data/nyu5 --split_file data/nyu5/splits/test.txt --checkpoint outputs/runs/exp02_rgbd_concat_e20/checkpoints/best.ckpt --variant rgbd_concat --batch_size 4 --accelerator cpu --devices 1
 ```
 
-RGB baseline:
-
-```bash
-python scripts/train.py --data_dir data/nyu5 --variant rgb --experiment_name exp01_rgb --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
-```
-
-RGBD concat:
-
-```bash
-python scripts/train.py --data_dir data/nyu5 --variant rgbd_concat --experiment_name exp02_rgbd_concat --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
-```
-
-RGBD boundary main method:
-
-```bash
-python scripts/train.py --data_dir data/nyu5 --variant rgbd_boundary --experiment_name exp03_rgbd_boundary --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
-```
-
-RGBD concat + boundary complementarity:
-
-```bash
-python scripts/train.py --data_dir data/nyu5 --variant rgbd_concat_boundary --experiment_name exp04_rgbd_concat_boundary_e20 --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
-```
-
-Plot training curves:
-
-```bash
-python scripts/plot_training_curves.py --run_dir outputs/runs/exp03_rgbd_boundary
-```
-
-Evaluate the test set:
-
-```bash
-python scripts/evaluate.py --data_dir data/nyu5 --split_file data/nyu5/splits/test.txt --checkpoint outputs/runs/exp03_rgbd_boundary/checkpoints/best.ckpt --variant rgbd_boundary --batch_size 4 --accelerator gpu --devices 1
-```
-
-Prediction visualization:
-
-```bash
-python scripts/predict_folder.py --data_dir data/nyu5 --split_file data/nyu5/splits/test.txt --checkpoint outputs/runs/exp03_rgbd_boundary/checkpoints/best.ckpt --variant rgbd_boundary --num_samples 8 --out_dir outputs/runs/exp03_rgbd_boundary/predictions
-```
-
-Campus RGB qualitative demo:
+自采集场景展示：
 
 ```bash
 python scripts/predict_campus_demo.py --rgb_dir data/campus_demo/rgb --checkpoint outputs/runs/exp01_rgb_e20/checkpoints/best.ckpt --variant rgb --out_dir outputs/report_assets/campus_demo --num_samples 8
 ```
 
-The campus demo images have no pixel-level ground truth labels and no real depth.
-They are used only for qualitative visualization with the RGB-only checkpoint.
-They are not used for training, mIoU, pixel accuracy, mean accuracy, or other
-quantitative evaluation.
+数据集、checkpoint 和 outputs 不随仓库提交，需要本地准备。
 
-## Outputs
+## 训练命令示例
 
-Training outputs are written to:
+RGB-only baseline：
 
-```text
-outputs/runs/{experiment_name}/
-  metrics.csv
-  checkpoints/best.ckpt
+```bash
+python scripts/train.py --data_dir data/nyu5 --variant rgb --experiment_name exp01_rgb_e20 --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
 ```
 
-Generated data, logs, checkpoints, figures, and local MAT files are ignored by Git.
+RGBD-concat：
+
+```bash
+python scripts/train.py --data_dir data/nyu5 --variant rgbd_concat --experiment_name exp02_rgbd_concat_e20 --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
+```
+
+RGBD-boundary：
+
+```bash
+python scripts/train.py --data_dir data/nyu5 --variant rgbd_boundary --experiment_name exp03_rgbd_boundary_e20 --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
+```
+
+RGBD-concat-boundary：
+
+```bash
+python scripts/train.py --data_dir data/nyu5 --variant rgbd_concat_boundary --experiment_name exp04_rgbd_concat_boundary_e20 --accelerator gpu --devices 1 --batch_size 4 --max_epochs 20
+```
+
+## 边界说明
+
+- 本项目不包含数据集下载、大模型下载、在线部署或视频处理。
+- 自采集校园图片只用于定性展示，不作为定量泛化性能证明。
+- `risk_score` 是启发式提示，不代表真实安全决策标准。
+- 静态 Web 页面只展示报告结果，不提供在线推理服务。

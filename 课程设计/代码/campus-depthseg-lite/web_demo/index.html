@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>校园室内巡检的轻量 RGB-D 语义分割与空间占用分析系统</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">课程设计项目展示</p>
+          <h1>校园室内巡检的轻量 RGB-D 语义分割与空间占用分析系统</h1>
+          <p class="lead">
+            基于 NYUDepthV2 的五类室内空间分割、RGB-D 融合消融实验与校园场景定性展示。
+          </p>
+          <div class="hero-actions">
+            <a class="button-link" href="https://github.com/hansu650/AI-homework">GitHub 项目仓库</a>
+            <span class="status-pill">Static HTML · No online inference</span>
+          </div>
+        </div>
+        <div class="stat-grid" aria-label="project highlights">
+          <article class="stat-card">
+            <span>Best Model</span>
+            <strong>RGBD-concat</strong>
+          </article>
+          <article class="stat-card">
+            <span>Test mIoU</span>
+            <strong>0.4683</strong>
+          </article>
+          <article class="stat-card">
+            <span>Dataset</span>
+            <strong>NYUDepthV2</strong>
+            <small>1449 samples</small>
+          </article>
+          <article class="stat-card">
+            <span>Model Size</span>
+            <strong>about 1.51M</strong>
+            <small>params</small>
+          </article>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="section intro-section">
+        <div>
+          <h2>项目简介</h2>
+          <p>
+            本项目面向校园教室、走廊、实验室和公共空间等室内场景，完成轻量 RGB-D
+            语义分割与空间占用分析。系统输入 RGB 或 RGB-D 图像，输出五类语义分割结果，
+            并结合地面可见率和障碍物占比生成巡检提示。
+          </p>
+        </div>
+        <div class="label-panel">
+          <h3>五类标签</h3>
+          <div class="label-row" aria-label="five semantic labels">
+            <span>other</span>
+            <span>floor</span>
+            <span>wall</span>
+            <span>obstacle</span>
+            <span>door_window</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="section-kicker">Method</p>
+          <h2>方法概览</h2>
+        </div>
+        <p>
+          CampusDepthSegLite 包含 MiniHierarchicalEncoder、Weighted-FPN Decoder
+          和可选 DepthBoundaryResidualFusion。模型通过四组变体比较 RGB、完整 depth
+          和 depth edge 对室内空间分割的影响。
+        </p>
+        <figure class="figure figure-architecture">
+          <img
+            src="assets/architecture.png"
+            alt="CampusDepthSegLite 网络结构图"
+            loading="lazy"
+          />
+          <figcaption>图1 CampusDepthSegLite 网络结构图</figcaption>
+        </figure>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="section-kicker">Experiments</p>
+          <h2>实验结果</h2>
+        </div>
+        <p>
+          四组实验均采用相同数据划分和训练设置。RGBD-concat 取得最佳整体性能；
+          RGBD-concat-boundary 在 obstacle 类上表现更好，说明边界信息对障碍区域有一定帮助。
+        </p>
+        <div class="result-layout">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>方法</th>
+                  <th>输入</th>
+                  <th>mIoU</th>
+                  <th>Pixel Acc</th>
+                  <th>Mean Acc</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RGB-only</td>
+                  <td>RGB</td>
+                  <td>0.4226</td>
+                  <td>0.5964</td>
+                  <td>0.5881</td>
+                </tr>
+                <tr class="best-row">
+                  <td>RGBD-concat</td>
+                  <td>RGB + Depth</td>
+                  <td><strong>0.4683</strong></td>
+                  <td><strong>0.6318</strong></td>
+                  <td><strong>0.6294</strong></td>
+                </tr>
+                <tr>
+                  <td>RGBD-boundary</td>
+                  <td>RGB + Depth</td>
+                  <td>0.4206</td>
+                  <td>0.5974</td>
+                  <td>0.5925</td>
+                </tr>
+                <tr>
+                  <td>RGBD-concat-boundary</td>
+                  <td>RGB + Depth</td>
+                  <td>0.4605</td>
+                  <td>0.6271</td>
+                  <td>0.6191</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bar-card" aria-label="mIoU bar chart">
+            <h3>mIoU 对比</h3>
+            <div class="bar-row">
+              <span>RGB-only</span>
+              <div class="bar-track"><i style="width: 90.2%"></i></div>
+              <b>0.4226</b>
+            </div>
+            <div class="bar-row best-bar">
+              <span>RGBD-concat</span>
+              <div class="bar-track"><i style="width: 100%"></i></div>
+              <b>0.4683</b>
+            </div>
+            <div class="bar-row">
+              <span>RGBD-boundary</span>
+              <div class="bar-track"><i style="width: 89.8%"></i></div>
+              <b>0.4206</b>
+            </div>
+            <div class="bar-row">
+              <span>Concat-boundary</span>
+              <div class="bar-track"><i style="width: 98.3%"></i></div>
+              <b>0.4605</b>
+            </div>
+          </div>
+        </div>
+        <p class="note">
+          RGBD-concat 取得最佳整体性能；RGBD-concat-boundary 在 obstacle 类上表现更好，
+          说明边界信息对障碍区域有一定帮助。
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="section-kicker">Visualization</p>
+          <h2>训练过程与可视化</h2>
+        </div>
+        <div class="figure-grid two-col">
+          <figure class="figure">
+            <img
+              src="assets/training_process.png"
+              alt="RGBD-concat 训练过程曲线"
+              loading="lazy"
+            />
+            <figcaption>图2 RGBD-concat 训练损失与验证指标曲线</figcaption>
+          </figure>
+          <figure class="figure">
+            <img
+              src="assets/confusion_matrix.png"
+              alt="归一化混淆矩阵"
+              loading="lazy"
+            />
+            <figcaption>图3 最佳模型归一化混淆矩阵</figcaption>
+          </figure>
+        </div>
+        <figure class="figure figure-wide">
+          <img
+            src="assets/method_comparison.png"
+            alt="四种方法预测结果对比"
+            loading="lazy"
+          />
+          <figcaption>图4 四种方法预测结果对比</figcaption>
+        </figure>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="section-kicker">Campus Demo</p>
+          <h2>自采集校园场景展示</h2>
+        </div>
+        <div class="warning-box">
+          说明：自采集校园图片没有像素级 GT，也没有真实 depth，仅用于定性展示，
+          不参与训练或定量评价，不计算 mIoU、Pixel Acc 或 Mean Acc。
+        </div>
+        <figure class="figure figure-wide">
+          <img
+            src="assets/campus_rgb_gallery.png"
+            alt="自采集校园场景 RGB 样例总览"
+            loading="lazy"
+          />
+          <figcaption>图5 自采集校园场景样例总览</figcaption>
+        </figure>
+
+        <div class="demo-grid">
+          <article class="demo-card">
+            <h3>教室场景</h3>
+            <img src="assets/campus_classroom.png" alt="教室场景定性结果" loading="lazy" />
+            <div class="risk-line"><span>risk_score: 0.5470</span><span>risk_level: medium</span></div>
+            <p>模型检测到下半区域可见地面较少，提示通行区域需要复核。</p>
+          </article>
+          <article class="demo-card">
+            <h3>走廊场景</h3>
+            <img src="assets/campus_corridor.png" alt="走廊场景定性结果" loading="lazy" />
+            <div class="risk-line"><span>risk_score: 0.5232</span><span>risk_level: medium</span></div>
+            <p>走廊区域中存在局部遮挡，系统给出中等风险提示。</p>
+          </article>
+          <article class="demo-card">
+            <h3>实验室/公共空间场景</h3>
+            <img src="assets/campus_lab.png" alt="实验室或公共空间场景定性结果" loading="lazy" />
+            <div class="risk-line"><span>risk_score: 0.6084</span><span>risk_level: medium</span></div>
+            <p>场景中障碍区域占比较高，适合用于展示风险框和占用图效果。</p>
+          </article>
+          <article class="demo-card">
+            <h3>遮挡较多室内场景</h3>
+            <img src="assets/campus_occluded.png" alt="遮挡较多室内场景定性结果" loading="lazy" />
+            <div class="risk-line"><span>risk_score: 0.5879</span><span>risk_level: medium</span></div>
+            <p>画面中遮挡物较多，系统提示需要结合现场情况复核。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="section-kicker">Limitations</p>
+          <h2>局限性</h2>
+        </div>
+        <div class="limit-grid">
+          <article>NYUDepthV2 与真实校园场景存在 domain gap。</article>
+          <article>自采集图像无 GT 和真实 depth。</article>
+          <article>risk_score 是启发式提示，不代表真实安全决策。</article>
+          <article>后续可采集带标注校园数据并改进 RGB-D 融合方式。</article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="section-kicker">Local Usage</p>
+          <h2>本地运行方式</h2>
+        </div>
+        <p>数据集、checkpoint 和 outputs 不随网页提交，需要在本地准备。</p>
+        <div class="command-list">
+          <div>
+            <h3>安装依赖</h3>
+            <pre><code>pip install -r requirements.txt</code></pre>
+          </div>
+          <div>
+            <h3>测试集评估</h3>
+            <pre><code>python scripts/evaluate.py --data_dir data/nyu5 --split_file data/nyu5/splits/test.txt --checkpoint outputs/runs/exp02_rgbd_concat_e20/checkpoints/best.ckpt --variant rgbd_concat --batch_size 4 --accelerator cpu --devices 1</code></pre>
+          </div>
+          <div>
+            <h3>自采集场景展示</h3>
+            <pre><code>python scripts/predict_campus_demo.py --rgb_dir data/campus_demo/rgb --checkpoint outputs/runs/exp01_rgb_e20/checkpoints/best.ckpt --variant rgb --out_dir outputs/report_assets/campus_demo --num_samples 8</code></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>课程设计结果展示 · 静态页面 · 无在线推理</p>
+      </div>
+    </footer>
+  </body>
+</html>
