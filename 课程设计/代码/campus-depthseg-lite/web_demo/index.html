@@ -265,7 +265,7 @@
           <p class="section-kicker">Local Usage</p>
           <h2>本地运行方式</h2>
         </div>
-        <p>数据集、checkpoint 和 outputs 不随网页提交，需要在本地准备。</p>
+        <p>以下命令以项目根目录 <code>campus-depthseg-lite</code> 为当前目录。数据集、checkpoint 和 outputs 不随网页提交，需要在本地准备。</p>
         <div class="command-list">
           <div>
             <h3>安装依赖</h3>
@@ -273,11 +273,23 @@
           </div>
           <div>
             <h3>测试集评估</h3>
-            <pre><code>python scripts/evaluate.py --data_dir data/nyu5 --split_file data/nyu5/splits/test.txt --checkpoint outputs/runs/exp02_rgbd_concat_e20/checkpoints/best.ckpt --variant rgbd_concat --batch_size 4 --accelerator cpu --devices 1</code></pre>
+            <pre><code>python scripts\evaluate.py ^
+  --data_dir data\nyu5 ^
+  --split_file data\nyu5\splits\test.txt ^
+  --checkpoint outputs\runs\exp02_rgbd_concat_e20\checkpoints\best.ckpt ^
+  --variant rgbd_concat ^
+  --batch_size 4 ^
+  --accelerator cpu ^
+  --devices 1</code></pre>
           </div>
           <div>
             <h3>自采集场景展示</h3>
-            <pre><code>python scripts/predict_campus_demo.py --rgb_dir data/campus_demo/rgb --checkpoint outputs/runs/exp01_rgb_e20/checkpoints/best.ckpt --variant rgb --out_dir outputs/report_assets/campus_demo --num_samples 8</code></pre>
+            <pre><code>python scripts\predict_campus_demo.py ^
+  --rgb_dir data\campus_demo\rgb ^
+  --checkpoint outputs\runs\exp01_rgb_e20\checkpoints\best.ckpt ^
+  --variant rgb ^
+  --out_dir outputs\report_assets\campus_demo ^
+  --num_samples 8</code></pre>
           </div>
         </div>
       </section>

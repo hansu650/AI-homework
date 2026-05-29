@@ -39,9 +39,15 @@ body {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
-  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: 40px;
   align-items: center;
+}
+
+.hero-copy,
+.stat-grid,
+.stat-card {
+  min-width: 0;
 }
 
 .eyebrow,
@@ -128,6 +134,7 @@ p {
   border: 1px solid var(--line);
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(30, 69, 105, 0.08);
+  overflow-wrap: break-word;
 }
 
 .stat-card span,
@@ -141,8 +148,9 @@ p {
   display: block;
   margin-top: 8px;
   color: var(--blue-dark);
-  font-size: 22px;
+  font-size: clamp(19px, 2vw, 22px);
   line-height: 1.18;
+  overflow-wrap: anywhere;
 }
 
 .section {
@@ -352,19 +360,28 @@ th {
   margin-top: 16px;
 }
 
+.command-list > div {
+  min-width: 0;
+}
+
 pre {
+  max-width: 100%;
   overflow-x: auto;
   margin: 10px 0 0;
-  padding: 13px;
+  padding: 12px;
   background: #12202e;
   border-radius: 8px;
   color: #f4f8fb;
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 code {
   font-family: Consolas, "Courier New", monospace;
+  max-width: 100%;
 }
 
 .site-footer {
@@ -375,7 +392,7 @@ code {
   text-align: center;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   .hero-grid,
   .intro-section,
   .two-col,
