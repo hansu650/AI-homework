@@ -26,7 +26,9 @@
 
 课程设计项目提供了一个轻量静态 Web 展示页，只用于展示模型结构、实验结果和自采集校园场景定性结果，不进行在线推理，不加载 checkpoint，也不需要 GPU 或服务器。
 
-入口：[`课程设计/代码/campus-depthseg-lite/web_demo/index.html`](课程设计/代码/campus-depthseg-lite/web_demo/index.html)
+在线预览：[`点击查看静态展示页`](https://htmlpreview.github.io/?https://github.com/hansu650/AI-homework/blob/main/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E4%BB%A3%E7%A0%81/campus-depthseg-lite/web_demo/index.html)
+
+源码位置：[`课程设计/代码/campus-depthseg-lite/web_demo/index.html`](课程设计/代码/campus-depthseg-lite/web_demo/index.html)
 
 ## 边界说明
 

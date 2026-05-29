@@ -4,7 +4,13 @@
 
 ## 使用方式
 
-直接双击 `index.html` 即可在浏览器中查看。该页面不需要服务器、GPU、模型检查点或数据集。
+在线预览：
+
+[`点击查看静态展示页`](https://htmlpreview.github.io/?https://github.com/hansu650/AI-homework/blob/main/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E4%BB%A3%E7%A0%81/campus-depthseg-lite/web_demo/index.html)
+
+本地查看：
+
+直接双击 `index.html` 即可在浏览器中查看。GitHub 的文件浏览页会把 HTML 当作源码显示，不会直接渲染页面。该页面不需要服务器、GPU、模型检查点或数据集。
 
 ## 展示内容
 

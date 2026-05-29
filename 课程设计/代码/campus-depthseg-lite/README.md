@@ -105,11 +105,12 @@ CampusDepthSegLite 由三部分组成：
 
 项目提供了一个轻量静态展示页，用于集中展示模型结构、实验结果、训练曲线和自采集校园场景定性结果。
 
+- 在线预览：[点击查看静态展示页](https://htmlpreview.github.io/?https://github.com/hansu650/AI-homework/blob/main/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1/%E4%BB%A3%E7%A0%81/campus-depthseg-lite/web_demo/index.html)
 - 入口文件：[web_demo/index.html](web_demo/index.html)
 - 样式文件：[web_demo/style.css](web_demo/style.css)
 - 页面说明：[web_demo/README.md](web_demo/README.md)
 
-该页面是纯静态 HTML，不做在线推理，不加载 checkpoint，不需要服务器或 GPU。下载项目后可直接双击 `web_demo/index.html` 本地查看。
+GitHub 的文件浏览页会把 `index.html` 当作源码显示；如需在线查看渲染效果，请使用上方“在线预览”链接。该页面是纯静态 HTML，不做在线推理，不加载 checkpoint，不需要服务器或 GPU。下载项目后也可直接双击 `web_demo/index.html` 本地查看。
 
 ## 项目结构
 
