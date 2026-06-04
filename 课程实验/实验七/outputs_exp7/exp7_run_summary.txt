@@ -1,0 +1,13 @@
+实验七：大语言模型实验运行摘要
+
+生成时间：2026-06-04 11:11:38
+LLM 后端：deepseek / deepseek-v4-flash
+Embedding 后端：mock / mock-hash-embedding
+FAISS 可用：True
+输出目录：D:\daima\cursor\人工智能技术与应用\课程实验\实验七\outputs_exp7
+
+主要输出：
+- exp7_prompt_engineering_results.md：提示工程对比结果
+- exp7_rag_results.md：RAG 问答记录和来源引用
+- exp7_agent_trace.md：Agent 思考-行动-观察记录
+- exp7_agent_report.md：Agent 最终报告

@@ -1,0 +1,162 @@
+[
+  {
+    "question": "病假需要在什么时候提交申请，返岗后需要补交什么材料？",
+    "answer": "回答：病假需在上班前通过企业微信提交申请，返岗后应在三个工作日内补交医院诊断证明、病历或正规医疗机构开具的休息建议。\n\n依据：company_leave_policy.txt",
+    "sources": [
+      {
+        "source": "company_leave_policy.txt",
+        "chunk_id": "company_leave_policy_chunk_001",
+        "score": 0.4307,
+        "text_preview": "天的，公司可要求员工提供复诊证明。\n\n第四条 事假规定：员工因个人事务请假，应至少提前一天提交申请，说明请假原因和起止时间。事假期间不计发当日工资。紧急情况无法提前申请的，应先电话告知主管，并在当日补交线上申请。\n\n第五条 调休与销假：员工..."
+      },
+      {
+        "source": "company_leave_policy.txt",
+        "chunk_id": "company_leave_policy_chunk_000",
+        "score": 0.3905,
+        "text_preview": "公司请假制度\n\n第一条 适用范围：本制度适用于公司全体正式员工、试用期员工以及经部门负责人确认的实习人员。员工因病、因事、婚丧、生育、学习考试等原因不能按时出勤时，应按照本制度办理请假手续。请假应遵循提前申请、真实说明、逐级审批、按时销假的..."
+      },
+      {
+        "source": "office_equipment_policy.txt",
+        "chunk_id": "office_equipment_policy_chunk_000",
+        "score": 0.3543,
+        "text_preview": "办公设备申领与归还流程\n\n第一条 设备范围：本流程所称办公设备包括笔记本电脑、台式机、显示器、键盘鼠标、耳机、移动硬盘、投影仪、会议摄像头以及经行政部登记的其他办公资产。设备由行政部统一采购、编号、发放和盘点，信息技术部负责系统安装、账号配..."
+      },
+      {
+        "source": "overtime_allowance_policy.txt",
+        "chunk_id": "overtime_allowance_policy_chunk_000",
+        "score": 0.3445,
+        "text_preview": "公司加班与补贴政策\n\n第一条 加班定义：加班是指员工因工作需要，在标准工作时间之外继续完成经批准的工作任务。员工自愿延长工作时间但未经过审批的，不计为公司认可的加班。所有加班应坚持必要、合理、可追溯原则，部门负责人应优先通过优化排班和提高效..."
+      }
+    ],
+    "in_scope": true,
+    "type": "直接问题"
+  },
+  {
+    "question": "工作日晚间加班满两小时有什么补贴？超过四小时并晚于二十二点结束怎么处理？",
+    "answer": "回答：工作日晚间加班满两小时，给予三十元餐补。若超过四小时且结束时间晚于二十二点，可报销单程交通费。\n\n依据：overtime_allowance_policy.txt",
+    "sources": [
+      {
+        "source": "overtime_allowance_policy.txt",
+        "chunk_id": "overtime_allowance_policy_chunk_000",
+        "score": 0.5963,
+        "text_preview": "公司加班与补贴政策\n\n第一条 加班定义：加班是指员工因工作需要，在标准工作时间之外继续完成经批准的工作任务。员工自愿延长工作时间但未经过审批的，不计为公司认可的加班。所有加班应坚持必要、合理、可追溯原则，部门负责人应优先通过优化排班和提高效..."
+      },
+      {
+        "source": "remote_work_policy.txt",
+        "chunk_id": "remote_work_policy_chunk_000",
+        "score": 0.4563,
+        "text_preview": "远程办公与信息安全规定\n\n第一条 申请条件：远程办公适用于因项目协作、出差、特殊天气、临时照护家庭成员或其他经公司认可的情形。员工申请远程办公时，应明确远程日期、工作地点、主要任务、沟通方式和可交付成果。连续远程办公超过三天的，需部门经理审..."
+      },
+      {
+        "source": "overtime_allowance_policy.txt",
+        "chunk_id": "overtime_allowance_policy_chunk_001",
+        "score": 0.4408,
+        "text_preview": "休的，经审批后按公司薪酬规则发放加班补贴。法定节假日加班按照国家相关规定执行。\n\n第四条 调休规则：周末加班形成的调休应在三个月内使用，使用时需在请假系统中选择“调休假”，并关联已审批的加班单。调休原则上以半天为最小单位，不得拆分为小时级休..."
+      },
+      {
+        "source": "company_leave_policy.txt",
+        "chunk_id": "company_leave_policy_chunk_001",
+        "score": 0.4239,
+        "text_preview": "天的，公司可要求员工提供复诊证明。\n\n第四条 事假规定：员工因个人事务请假，应至少提前一天提交申请，说明请假原因和起止时间。事假期间不计发当日工资。紧急情况无法提前申请的，应先电话告知主管，并在当日补交线上申请。\n\n第五条 调休与销假：员工..."
+      }
+    ],
+    "in_scope": true,
+    "type": "直接问题"
+  },
+  {
+    "question": "员工周末加班后想在下周调休，应该怎么申请，调休和加班记录之间有什么关系？",
+    "answer": "回答：员工周末加班后如需在下周调休，应在请假系统中选择“调休假”类型，并关联已审批的加班单来完成申请。调休必须基于已审批的加班记录，且周末加班形成的调休应在三个月内使用。\n\n依据：overtime_allowance_policy.txt；company_leave_policy.txt",
+    "sources": [
+      {
+        "source": "overtime_allowance_policy.txt",
+        "chunk_id": "overtime_allowance_policy_chunk_000",
+        "score": 0.5561,
+        "text_preview": "公司加班与补贴政策\n\n第一条 加班定义：加班是指员工因工作需要，在标准工作时间之外继续完成经批准的工作任务。员工自愿延长工作时间但未经过审批的，不计为公司认可的加班。所有加班应坚持必要、合理、可追溯原则，部门负责人应优先通过优化排班和提高效..."
+      },
+      {
+        "source": "overtime_allowance_policy.txt",
+        "chunk_id": "overtime_allowance_policy_chunk_001",
+        "score": 0.5327,
+        "text_preview": "休的，经审批后按公司薪酬规则发放加班补贴。法定节假日加班按照国家相关规定执行。\n\n第四条 调休规则：周末加班形成的调休应在三个月内使用，使用时需在请假系统中选择“调休假”，并关联已审批的加班单。调休原则上以半天为最小单位，不得拆分为小时级休..."
+      },
+      {
+        "source": "company_leave_policy.txt",
+        "chunk_id": "company_leave_policy_chunk_001",
+        "score": 0.4953,
+        "text_preview": "天的，公司可要求员工提供复诊证明。\n\n第四条 事假规定：员工因个人事务请假，应至少提前一天提交申请，说明请假原因和起止时间。事假期间不计发当日工资。紧急情况无法提前申请的，应先电话告知主管，并在当日补交线上申请。\n\n第五条 调休与销假：员工..."
+      },
+      {
+        "source": "remote_work_policy.txt",
+        "chunk_id": "remote_work_policy_chunk_000",
+        "score": 0.4191,
+        "text_preview": "远程办公与信息安全规定\n\n第一条 申请条件：远程办公适用于因项目协作、出差、特殊天气、临时照护家庭成员或其他经公司认可的情形。员工申请远程办公时，应明确远程日期、工作地点、主要任务、沟通方式和可交付成果。连续远程办公超过三天的，需部门经理审..."
+      }
+    ],
+    "in_scope": true,
+    "type": "综合问题"
+  },
+  {
+    "question": "新员工需要领电脑并偶尔远程办公时，设备申领和信息安全方面分别要注意什么？",
+    "answer": "回答：新员工申领电脑时，须由直属主管提前三个工作日提交设备申领单，行政部按标准配置电脑和外设，信息技术部完成系统初始化、杀毒软件安装、磁盘加密和公司邮箱配置，员工领取时需核对资产编号并签署《办公资产领用确认单》。对于远程办公，原则上应使用公司发放的电脑，必须连接公司VPN或经批准的安全访问通道，不得通过公共网盘或个人邮箱等未授权方式传输公司文件；处理重要数据时要开启磁盘加密和屏幕锁定，离开座位时及时锁屏。\n\n依据：[来源1] remote_work_policy.txt；[来源2] office_equipment_policy.txt",
+    "sources": [
+      {
+        "source": "remote_work_policy.txt",
+        "chunk_id": "remote_work_policy_chunk_000",
+        "score": 0.5634,
+        "text_preview": "远程办公与信息安全规定\n\n第一条 申请条件：远程办公适用于因项目协作、出差、特殊天气、临时照护家庭成员或其他经公司认可的情形。员工申请远程办公时，应明确远程日期、工作地点、主要任务、沟通方式和可交付成果。连续远程办公超过三天的，需部门经理审..."
+      },
+      {
+        "source": "office_equipment_policy.txt",
+        "chunk_id": "office_equipment_policy_chunk_000",
+        "score": 0.5338,
+        "text_preview": "办公设备申领与归还流程\n\n第一条 设备范围：本流程所称办公设备包括笔记本电脑、台式机、显示器、键盘鼠标、耳机、移动硬盘、投影仪、会议摄像头以及经行政部登记的其他办公资产。设备由行政部统一采购、编号、发放和盘点，信息技术部负责系统安装、账号配..."
+      },
+      {
+        "source": "remote_work_policy.txt",
+        "chunk_id": "remote_work_policy_chunk_001",
+        "score": 0.4819,
+        "text_preview": "司文件。处理重要数据时，应开启磁盘加密和屏幕锁定，离开座位时及时锁屏。\n\n第四条 数据安全：远程办公人员不得在公共场所讨论客户隐私、商业报价、源代码或其他敏感信息。确需打印资料的，应经主管批准，并在使用后及时碎纸或带回公司归档。发现设备遗失..."
+      },
+      {
+        "source": "overtime_allowance_policy.txt",
+        "chunk_id": "overtime_allowance_policy_chunk_000",
+        "score": 0.4346,
+        "text_preview": "公司加班与补贴政策\n\n第一条 加班定义：加班是指员工因工作需要，在标准工作时间之外继续完成经批准的工作任务。员工自愿延长工作时间但未经过审批的，不计为公司认可的加班。所有加班应坚持必要、合理、可追溯原则，部门负责人应优先通过优化排班和提高效..."
+      }
+    ],
+    "in_scope": true,
+    "type": "综合问题"
+  },
+  {
+    "question": "公司的股票期权什么时候兑现？",
+    "answer": "知识库中未找到与该问题直接相关的政策依据，因此无法回答。建议咨询人力资源部或查看补充制度文件。",
+    "sources": [
+      {
+        "source": "office_equipment_policy.txt",
+        "chunk_id": "office_equipment_policy_chunk_000",
+        "score": 0.3114,
+        "text_preview": "办公设备申领与归还流程\n\n第一条 设备范围：本流程所称办公设备包括笔记本电脑、台式机、显示器、键盘鼠标、耳机、移动硬盘、投影仪、会议摄像头以及经行政部登记的其他办公资产。设备由行政部统一采购、编号、发放和盘点，信息技术部负责系统安装、账号配..."
+      },
+      {
+        "source": "remote_work_policy.txt",
+        "chunk_id": "remote_work_policy_chunk_001",
+        "score": 0.3113,
+        "text_preview": "司文件。处理重要数据时，应开启磁盘加密和屏幕锁定，离开座位时及时锁屏。\n\n第四条 数据安全：远程办公人员不得在公共场所讨论客户隐私、商业报价、源代码或其他敏感信息。确需打印资料的，应经主管批准，并在使用后及时碎纸或带回公司归档。发现设备遗失..."
+      },
+      {
+        "source": "remote_work_policy.txt",
+        "chunk_id": "remote_work_policy_chunk_000",
+        "score": 0.3032,
+        "text_preview": "远程办公与信息安全规定\n\n第一条 申请条件：远程办公适用于因项目协作、出差、特殊天气、临时照护家庭成员或其他经公司认可的情形。员工申请远程办公时，应明确远程日期、工作地点、主要任务、沟通方式和可交付成果。连续远程办公超过三天的，需部门经理审..."
+      },
+      {
+        "source": "overtime_allowance_policy.txt",
+        "chunk_id": "overtime_allowance_policy_chunk_001",
+        "score": 0.2982,
+        "text_preview": "休的，经审批后按公司薪酬规则发放加班补贴。法定节假日加班按照国家相关规定执行。\n\n第四条 调休规则：周末加班形成的调休应在三个月内使用，使用时需在请假系统中选择“调休假”，并关联已审批的加班单。调休原则上以半天为最小单位，不得拆分为小时级休..."
+      }
+    ],
+    "in_scope": false,
+    "type": "知识库外"
+  }
+]
