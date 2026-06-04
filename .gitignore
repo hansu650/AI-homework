@@ -12,3 +12,10 @@
 
 __pycache__/
 *.pyc
+
+.env
+.env.*
+!.env.example
+
+实验七/outputs_exp7/
+实验七/knowledge_base_exp7/
