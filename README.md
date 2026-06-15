@@ -18,9 +18,23 @@
   </a>
 </p>
 
+### 系统设计图
+
 <p align="center">
-  <img src="课程设计/代码/campus-depthseg-lite/web_demo/assets/architecture.png" alt="CampusDepthSegLite architecture" width="760">
+  <img src="课程设计/代码/campus-depthseg-lite/web_demo/assets/architecture.png" alt="CampusDepthSegLite 系统总体框架" width="860">
+  <br>
+  <strong>图4-1 CampusDepthSegLite 系统总体框架</strong>
 </p>
+
+| 工程结构 | 轻量编码器 |
+| --- | --- |
+| <img src="课程设计/代码/campus-depthseg-lite/web_demo/assets/project_structure.png" alt="项目工程目录与核心文件组织" width="360"> | <img src="课程设计/代码/campus-depthseg-lite/web_demo/assets/encoder_module.png" alt="轻量编码器基本结构示意图" width="420"> |
+| 图4-2 项目工程目录与核心文件组织 | 图4-3 轻量编码器基本结构示意图 |
+
+| 深度边界残差融合 | 空间占用分析 |
+| --- | --- |
+| <img src="课程设计/代码/campus-depthseg-lite/web_demo/assets/depth_boundary_fusion.png" alt="深度边界残差融合模块示意图" width="420"> | <img src="课程设计/代码/campus-depthseg-lite/web_demo/assets/occupancy_flow.png" alt="空间占用分析流程示意图" width="420"> |
+| 图4-4 深度边界残差融合模块示意图 | 图4-5 空间占用分析流程示意图 |
 
 ## 静态展示页
 

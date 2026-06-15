@@ -67,22 +67,56 @@
 
       <section class="section">
         <div class="section-heading">
-          <p class="section-kicker">Method</p>
-          <h2>方法概览</h2>
+          <p class="section-kicker">System Design</p>
+          <h2>模型设计与系统实现</h2>
         </div>
         <p>
-          CampusDepthSegLite 包含 MiniHierarchicalEncoder、Weighted-FPN Decoder
-          和可选 DepthBoundaryResidualFusion。模型通过四组变体比较 RGB、完整 depth
-          和 depth edge 对室内空间分割的影响。
+          CampusDepthSegLite 围绕“输入构造、特征提取、RGB-D 融合、分割输出和空间占用分析”
+          组织完整数据流。模型包含 MiniHierarchicalEncoder、Weighted-FPN Decoder
+          和可选 DepthBoundaryResidualFusion，并将分割结果进一步转化为空间占用指标和巡检提示。
         </p>
         <figure class="figure figure-architecture">
           <img
             src="assets/architecture.png"
-            alt="CampusDepthSegLite 网络结构图"
+            alt="CampusDepthSegLite 系统总体框架"
             loading="lazy"
           />
-          <figcaption>图1 CampusDepthSegLite 网络结构图</figcaption>
+          <figcaption>图4-1 CampusDepthSegLite 系统总体框架</figcaption>
         </figure>
+        <div class="design-grid" aria-label="system design diagrams">
+          <figure class="figure design-card design-card-structure">
+            <img
+              src="assets/project_structure.png"
+              alt="项目工程目录与核心文件组织"
+              loading="lazy"
+            />
+            <figcaption>图4-2 项目工程目录与核心文件组织</figcaption>
+          </figure>
+          <figure class="figure design-card">
+            <img
+              src="assets/encoder_module.png"
+              alt="轻量编码器基本结构示意图"
+              loading="lazy"
+            />
+            <figcaption>图4-3 轻量编码器基本结构示意图</figcaption>
+          </figure>
+          <figure class="figure design-card">
+            <img
+              src="assets/depth_boundary_fusion.png"
+              alt="深度边界残差融合模块示意图"
+              loading="lazy"
+            />
+            <figcaption>图4-4 深度边界残差融合模块示意图</figcaption>
+          </figure>
+          <figure class="figure design-card">
+            <img
+              src="assets/occupancy_flow.png"
+              alt="空间占用分析流程示意图"
+              loading="lazy"
+            />
+            <figcaption>图4-5 空间占用分析流程示意图</figcaption>
+          </figure>
+        </div>
       </section>
 
       <section class="section">
@@ -180,7 +214,7 @@
               alt="RGBD-concat 训练过程曲线"
               loading="lazy"
             />
-            <figcaption>图2 RGBD-concat 训练损失与验证指标曲线</figcaption>
+            <figcaption>图5-1 RGBD-concat 训练损失与验证指标曲线</figcaption>
           </figure>
           <figure class="figure">
             <img
@@ -188,7 +222,7 @@
               alt="归一化混淆矩阵"
               loading="lazy"
             />
-            <figcaption>图3 最佳模型归一化混淆矩阵</figcaption>
+            <figcaption>图5-4 最佳模型归一化混淆矩阵</figcaption>
           </figure>
         </div>
         <figure class="figure figure-wide">
@@ -197,7 +231,7 @@
             alt="四种方法预测结果对比"
             loading="lazy"
           />
-          <figcaption>图4 四种方法预测结果对比</figcaption>
+          <figcaption>图5-3 四种方法预测结果对比</figcaption>
         </figure>
       </section>
 
@@ -216,7 +250,7 @@
             alt="自采集校园场景 RGB 样例总览"
             loading="lazy"
           />
-          <figcaption>图5 自采集校园场景样例总览</figcaption>
+          <figcaption>图5-6 自采集校园场景样例总览</figcaption>
         </figure>
 
         <div class="demo-grid">

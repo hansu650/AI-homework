@@ -15,7 +15,7 @@
 ## 展示内容
 
 - 项目简介、五类标签和关键成果指标。
-- CampusDepthSegLite 方法概览。
+- CampusDepthSegLite 系统总体框架、工程结构、轻量编码器、深度边界残差融合和空间占用分析流程。
 - 四组 RGB-D 融合策略消融实验结果。
 - 训练过程曲线、预测对比图和混淆矩阵。
 - 自采集校园场景样例与定性展示。
@@ -28,6 +28,10 @@
 当前使用图片：
 
 - `assets/architecture.png`
+- `assets/project_structure.png`
+- `assets/encoder_module.png`
+- `assets/depth_boundary_fusion.png`
+- `assets/occupancy_flow.png`
 - `assets/training_process.png`
 - `assets/method_comparison.png`
 - `assets/confusion_matrix.png`

@@ -224,6 +224,26 @@ p {
   max-height: 760px;
 }
 
+.design-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 22px;
+}
+
+.design-card {
+  margin-top: 0;
+}
+
+.design-card img {
+  max-height: 520px;
+}
+
+.design-card-structure img {
+  width: min(100%, 560px);
+  margin-inline: auto;
+}
+
 figcaption {
   margin-top: 9px;
   color: var(--muted);
@@ -395,6 +415,7 @@ code {
 @media (max-width: 900px) {
   .hero-grid,
   .intro-section,
+  .design-grid,
   .two-col,
   .result-layout,
   .demo-grid,
